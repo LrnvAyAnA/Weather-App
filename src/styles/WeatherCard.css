@@ -1,0 +1,42 @@
+.wrapper {
+    width: 30vw;
+    height: 80vh;
+    background-color: rgba(0, 0, 0, 0.39);
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.288);
+    display: flex;
+    justify-content: center;
+    padding-top: 36px;
+}
+.searchBar {
+    height: 8%;
+    width: 70%;
+    background-color: rgba(183, 183, 183, 0.33);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    padding-left: 25px;
+    padding-right: 25px;
+    justify-content: space-between;
+}
+
+.input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  color: #fff; /* или чёрный, если фон светлый */
+  width: 100%;
+  padding: 10px 0;
+}
+::placeholder{
+    color: #eaeaea9c;
+}
+
+.buttonSearch {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
