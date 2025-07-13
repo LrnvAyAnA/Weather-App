@@ -1,32 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import '../styles/WeatherCard.css'
 import SearchBar from './SearchBar';
-import {fetchWeatherForecast, getCoordinatesByCity} from '../weatherApi';
+import {fetchWeatherForecast} from '../weatherApi';
 
+interface CityOption {
+  name: string;
+  country: string;
+  lat: number;
+  lon: number;
+}
 
 const WeatherCard: React.FC = () => {
   const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
-const handleSearch = async (newCity: string) => {
-  const normalizedCity = newCity.trim();
-  setCity(normalizedCity);
+const handleSearch = async (selectedCity: CityOption) => {
+  setCity(`${selectedCity.name}, ${selectedCity.country}`);
   setError(null);
   setWeatherData(null);
 
   try {
-    const coords = await getCoordinatesByCity(normalizedCity);
-    const data = await fetchWeatherForecast(coords.lat, coords.lon);
+    const data = await fetchWeatherForecast(selectedCity.lat, selectedCity.lon);
     setWeatherData(data);
   } catch (err) {
     setError("Не удалось получить данные о погоде");
   }
-};
-const cityCoords: { [key: string]: { lat: number; lon: number } } = {
-  Moscow: { lat: 55.7558, lon: 37.6173 },
-  Paris: { lat: 48.8566, lon: 2.3522 },
-  Rome: { lat: 41.9028, lon: 12.4964 },
 };
 
   return (

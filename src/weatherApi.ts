@@ -1,7 +1,6 @@
 const API_KEY = "e22177d7f536e9cf5c6d11e7ce44723f";
 const BASE_URL = "https://api.openweathermap.org/data/2.5/";
 
-// Обёртка для проверки
 export const fetchWeatherForecast = async (lat: number, lon: number) => {
   try {
     const response = await fetch(
@@ -21,25 +20,26 @@ export const fetchWeatherForecast = async (lat: number, lon: number) => {
   }
 };
 
-export const getCoordinatesByCity = async (city: string) => {
-  const API_KEY = "e22177d7f536e9cf5c6d11e7ce44723f";
-  const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)}&limit=1&appid=${API_KEY}`;
+// 💡 Новый метод — автоподсказки по городу
+export const getCitySuggestions = async (query: string) => {
+  const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=${API_KEY}`;
 
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error("Геокодинг не удался");
+    throw new Error("Не удалось получить подсказки");
   }
 
   const data = await response.json();
 
   if (!data || data.length === 0) {
-    throw new Error("Город не найден");
+    return [];
   }
 
-  return {
-    lat: data[0].lat,
-    lon: data[0].lon,
-    name: data[0].name,
-    country: data[0].country,
-  };
+  return data.map((item: any) => ({
+    name: item.name,
+    state: item.state,
+    country: item.country,
+    lat: item.lat,
+    lon: item.lon,
+  }));
 };

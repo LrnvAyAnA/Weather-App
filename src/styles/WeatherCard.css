@@ -1,3 +1,11 @@
+.container{
+    display: flex;
+    flex-direction: column; 
+    align-items: center;    
+    gap: 6px;              
+
+}
+
 .wrapper {
     width: 30vw;
     height: 80vh;
@@ -12,7 +20,7 @@
 }
 .searchBar {
     height: 8%;
-    width: 70%;
+    width: 100%;
     background-color: rgba(183, 183, 183, 0.33);
     border-radius: 30px;
     display: flex;
@@ -27,13 +35,37 @@
   outline: none;
   background: transparent;
   font-size: 16px;
-  color: #fff; /* или чёрный, если фон светлый */
+  color: #EAEAEA;
   width: 100%;
   padding: 10px 0;
 }
 ::placeholder{
     color: #eaeaea9c;
 }
+
+.suggestions {
+  width: 100%;
+  list-style: none;
+  color: #EAEAEA;
+  background: rgba(183, 183, 183, 0.33);
+  border-radius: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: scaleY(0.5);
+  transform-origin: top;
+  pointer-events: none;
+  transition: all 1s ease;
+  z-index: 10;
+}
+
+.suggestions.show {
+  padding-left: 25px;
+  padding-right: 25px;
+  margin: 0px 0px;
+  transform: scaleY(1);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
 
 .buttonSearch {
     background-color: transparent;
