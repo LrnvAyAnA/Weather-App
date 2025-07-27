@@ -1,3 +1,33 @@
+.wrapper {
+    width: 30vw;
+    height: 80vh;
+    background-color: rgba(0, 0, 0, 0.39);
+    border-radius: 25px;
+    backdrop-filter: blur(3px);
+      box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
+    border: 1px solid rgba(255, 255, 255, 0.288);
+    display: flex;
+    justify-content: center;
+    padding-top: 36px;
+}
+
+.current-weather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #eaeaea;
+  gap: 6px;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.description {
+  text-transform: capitalize;
+}
+
 .container{
     display: flex;
     flex-direction: column; 
@@ -6,22 +36,11 @@
 
 }
 
-.wrapper {
-    width: 30vw;
-    height: 80vh;
-    background-color: rgba(0, 0, 0, 0.39);
-    border-radius: 25px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.288);
-    display: flex;
-    justify-content: center;
-    padding-top: 36px;
-}
 .searchBar {
     height: 8%;
     width: 100%;
-    background-color: rgba(183, 183, 183, 0.33);
+    background-color: rgba(0, 0, 0, 0.61);
+      box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
     border-radius: 30px;
     display: flex;
     align-items: center;
@@ -39,33 +58,54 @@
   width: 100%;
   padding: 10px 0;
 }
+
 ::placeholder{
     color: #eaeaea9c;
 }
 
-.suggestions {
-  width: 100%;
-  list-style: none;
-  color: #EAEAEA;
-  background: rgba(183, 183, 183, 0.33);
-  border-radius: 30px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  transform: scaleY(0.5);
+/* .suggestions {
+  transform: scaleY(0);
   transform-origin: top;
+  transition: transform 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  opacity: 0;
   pointer-events: none;
-  transition: all 1s ease;
+} */
+
+.suggestions {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6), opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.61);
+  border-radius: 30px;
+  list-style: none;
   z-index: 10;
+  color: #EAEAEA;
+  box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
+  padding: 10px 25px; /* сразу внутренние отступы */
+  overflow: hidden; /* чтобы список не вылазил при scaleY(0) */
 }
 
 .suggestions.show {
-  padding-left: 25px;
-  padding-right: 25px;
-  margin: 0px 0px;
   transform: scaleY(1);
+  opacity: 1;
   pointer-events: auto;
-  cursor: pointer;
 }
 
+.suggestions li {
+  display: flex;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: background-color 0.2s ease;
+}
+
+.suggestions li:hover {
+  background-color: rgba(124, 124, 124, 0.301);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.178);
+}
 
 .buttonSearch {
     background-color: transparent;

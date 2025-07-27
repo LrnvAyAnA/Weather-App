@@ -1,10 +1,10 @@
 const API_KEY = "e22177d7f536e9cf5c6d11e7ce44723f";
-const BASE_URL = "https://api.openweathermap.org/data/2.5/";
+const BASE_URL = "https://api.openweathermap.org";
 
 export const fetchWeatherForecast = async (lat: number, lon: number) => {
   try {
     const response = await fetch(
-      `${BASE_URL}forecast?lat=${lat}&lon=${lon}&cnt=40&appid=${API_KEY}&units=metric`
+      `${BASE_URL}/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=40&appid=${API_KEY}&units=metric`
     );
 
     if (!response.ok) {
@@ -20,9 +20,26 @@ export const fetchWeatherForecast = async (lat: number, lon: number) => {
   }
 };
 
-// 💡 Новый метод — автоподсказки по городу
+export const fetchCurrentWeather = async (lat: number, lon: number) => {
+  const url = `${BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Ошибка получения текущей погоды");
+    }
+
+    const data = await response.json();
+    console.log("Текущая погода:", data);
+    return data;
+  } catch (error) {
+    console.error("Ошибка:", error);
+    throw error;
+  }
+};
+
 export const getCitySuggestions = async (query: string) => {
-  const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=${API_KEY}`;
+  const url = `${BASE_URL}/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=${API_KEY}`;
 
   const response = await fetch(url);
   if (!response.ok) {

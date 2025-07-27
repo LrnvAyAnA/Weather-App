@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ReactComponent as Search } from '../assests/Search.svg'
 import '../styles/WeatherCard.css'
 import { getCitySuggestions } from "../weatherApi";
@@ -29,6 +29,28 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   return () => clearTimeout(timeout);
 }, [city]);
+
+const listRef = useRef<HTMLUListElement>(null);
+
+useEffect(() => {
+  const el = listRef.current;
+  if (!el) return;
+
+  if (isVisible) {
+    el.style.height = el.scrollHeight + "px";
+
+    const timer = setTimeout(() => {
+      if (el) el.style.height = "auto";
+    }, 300);
+
+    return () => clearTimeout(timer);
+  } else {
+    el.style.height = el.scrollHeight + "px";
+    requestAnimationFrame(() => {
+      el.style.height = "0px";
+    });
+  }
+}, [suggestions.length, isVisible]);
 
 const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const value = e.target.value;
@@ -71,7 +93,10 @@ const handleSelect = (city: CityOption) => {
         <Search width="24" height="24" />
       </button>
     </div>  
-   <ul className={`suggestions ${isVisible ? "show" : ""}`}>
+   <ul
+  ref={listRef}
+  className={`suggestions ${isVisible ? "show" : ""}`}
+>
   {suggestions.map((option, i) => (
     <li key={i} onClick={() => handleSelect(option)}>
       {option.name}, {option.country}
