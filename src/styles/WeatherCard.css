@@ -4,41 +4,78 @@
     background-color: rgba(0, 0, 0, 0.39);
     border-radius: 25px;
     backdrop-filter: blur(3px);
-      box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
+    box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
     border: 1px solid rgba(255, 255, 255, 0.288);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     padding-top: 36px;
 }
 
-.current-weather {
+.weather-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: 8vw;
+  row-gap: 40px;
+  align-items: start;
+  color: #eaeaea;
+}
+
+/* Можешь использовать grid-area, но можно и так оставить — по порядку */
+
+.city-date-info {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  font-size: 20px;
+}
+
+.cityName {
+  display: flex;
   align-items: center;
-  color: #eaeaea;
-  gap: 6px;
+  gap: 8px;
+  font-size: 27px;
+}
+
+.unit-toggle {
+  justify-self: end; /* выравнивание в правой ячейке */
 }
 
 .weather-main {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  text-align: center;
+  font-size: 50px;
 }
+
+.weather-icon img {
+  text-align: center;
+  width: 110px;
+  height: auto;
+}
+
 .description {
-  text-transform: capitalize;
+  font-size: 25px;
 }
 
-.container{
-    display: flex;
-    flex-direction: column; 
-    align-items: center;    
-    gap: 6px;              
+.humidity,
+.wind {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  justify-content: center;
+}
 
+.search{
+  display: flex;
+  width: 75%;
+  flex-direction: column; 
+  align-items: center;
 }
 
 .searchBar {
-    height: 8%;
-    width: 100%;
+  width: 100%;
     background-color: rgba(0, 0, 0, 0.61);
       box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
     border-radius: 30px;
@@ -55,21 +92,13 @@
   background: transparent;
   font-size: 16px;
   color: #EAEAEA;
-  width: 100%;
-  padding: 10px 0;
+  
+  padding: 20px 0;
 }
 
 ::placeholder{
     color: #eaeaea9c;
 }
-
-/* .suggestions {
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6);
-  opacity: 0;
-  pointer-events: none;
-} */
 
 .suggestions {
   transform: scaleY(0);
@@ -84,8 +113,8 @@
   z-index: 10;
   color: #EAEAEA;
   box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
-  padding: 10px 25px; /* сразу внутренние отступы */
-  overflow: hidden; /* чтобы список не вылазил при scaleY(0) */
+  padding: 10px 25px;
+  overflow: hidden;
 }
 
 .suggestions.show {

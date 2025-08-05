@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import '../styles/WeatherCard.css'
 import SearchBar from './SearchBar';
+import { ReactComponent as Point } from '../assests/Point.svg';
+import { ReactComponent as Humidity } from '../assests/Humidity.svg';
+import { ReactComponent as Wind } from '../assests/Wind.svg';
 import {fetchCurrentWeather, fetchWeatherForecast} from '../weatherApi';
 
 interface CityOption {
@@ -28,34 +31,65 @@ const handleSearch = async (selectedCity: CityOption) => {
   }
 };
 
-function getWeekday(dt: number): string {
-  const date = new Date(dt * 1000); // UNIX timestamp → ms
-  return date.toLocaleDateString("ru-RU", { weekday: "long" });
-}
+function getFormattedDate(dt: number): string {
+  const date = new Date(dt * 1000);
 
+  const weekday = date.toLocaleDateString("ru-RU", {
+    weekday: "long",
+  });
+
+  const day = date.getDate();
+  const month = date.toLocaleDateString("ru-RU", {
+    month: "short",
+  });
+
+  const capitalize = (str: string) =>
+    str.charAt(0).toUpperCase() + str.slice(1);
+
+  return `${capitalize(weekday)}, ${day} ${month}`;
+}
   return (
     <div className='wrapper'>
-      <SearchBar onSearch={handleSearch} />
-      
+        <SearchBar onSearch={handleSearch}/>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {weatherData && (
-  <div className="current-weather">
-    <h2>{weatherData.name}</h2>
-    <p>{getWeekday(weatherData.dt)}</p>
-
-    <div className="weather-main">
-      <img
-        src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
-        alt={weatherData.weather[0].description}
-      />
-      <p className="description">{weatherData.weather[0].description}</p>
+<div className="weather-grid">
+  <div className="city-date-info">
+    <div className="cityName">
+      <Point />
+      <div>{weatherData.name}</div>
     </div>
-
-    <p>🌡 Температура: {Math.round(weatherData.main.temp)}°C</p>
-    <p>💧 Влажность: {weatherData.main.humidity}%</p>
-    <p>💨 Ветер: {weatherData.wind.speed} м/с</p>
+    <div>{getFormattedDate(weatherData.dt)}</div>
   </div>
+
+  <div className="unit-toggle">
+    <button>°C / °F</button>
+  </div>
+
+  <div className="weather-icon">
+    <img
+      src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
+      alt={weatherData.weather[0].description}
+    />
+  </div>
+
+  <div className="weather-main">
+    <div>{Math.round(weatherData.main.temp)}°C</div>
+    <div className="description">{weatherData.weather[0].description}</div>
+  </div>
+
+  <div className="humidity">
+    <Humidity/>
+    <div>Влажность <br/>{weatherData.main.humidity}%</div>
+  </div>
+
+  <div className="wind">
+    <Wind/>
+    <div>Ветер <br/>{weatherData.wind.speed}м/с</div>
+  </div>
+</div>
 )}
+
 
     </div>
   );
