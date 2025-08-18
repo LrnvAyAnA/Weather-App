@@ -17,7 +17,7 @@ const WeatherCard: React.FC = () => {
   const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-
+  const [toggled, setToggled] = useState(false);
 const handleSearch = async (selectedCity: CityOption) => {
   setCity(`${selectedCity.name}, ${selectedCity.country}`);
   setError(null);
@@ -61,10 +61,16 @@ function getFormattedDate(dt: number): string {
     </div>
     <div>{getFormattedDate(weatherData.dt)}</div>
   </div>
-
-  <div className="unit-toggle">
-    <button>°C / °F</button>
-  </div>
+<div className="switch">
+  <input type="checkbox" id="toggle"/>
+  <label htmlFor="toggle">
+    <span className="blob"></span>
+  </label>
+</div>
+  {/* <div className="unit-toggle">
+    <button className={`toggle-btn ${toggled ? "toggled":""}`} onClick={()=>setToggled(!toggled)}>
+      <div className='thumb'></div>°C / °F</button>
+  </div> */}
 
   <div className="weather-icon">
     <img
