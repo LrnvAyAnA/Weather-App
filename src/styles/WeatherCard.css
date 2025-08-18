@@ -32,7 +32,7 @@
 }
 
 /* Правая колонка */
-.unit-toggle,
+.gooey-toggle,
 .weather-main,
 .wind {
   justify-self: end;

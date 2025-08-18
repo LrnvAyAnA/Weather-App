@@ -5,6 +5,7 @@ import { ReactComponent as Point } from '../assests/Point.svg';
 import { ReactComponent as Humidity } from '../assests/Humidity.svg';
 import { ReactComponent as Wind } from '../assests/Wind.svg';
 import {fetchCurrentWeather, fetchWeatherForecast} from '../weatherApi';
+import { GooeySwitch } from './GooeySwitch';
 
 interface CityOption {
   name: string;
@@ -61,17 +62,7 @@ function getFormattedDate(dt: number): string {
     </div>
     <div>{getFormattedDate(weatherData.dt)}</div>
   </div>
-<div className="switch">
-  <input type="checkbox" id="toggle"/>
-  <label htmlFor="toggle">
-    <span className="blob"></span>
-  </label>
-</div>
-  {/* <div className="unit-toggle">
-    <button className={`toggle-btn ${toggled ? "toggled":""}`} onClick={()=>setToggled(!toggled)}>
-      <div className='thumb'></div>°C / °F</button>
-  </div> */}
-
+  <GooeySwitch/>
   <div className="weather-icon">
     <img
       src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
