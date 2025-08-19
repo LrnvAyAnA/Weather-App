@@ -12,7 +12,6 @@ export const fetchWeatherForecast = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
-    console.log("API работает. Ответ:", data);
     return data;
   } catch (error) {
     console.error("Ошибка:", error);
@@ -30,7 +29,6 @@ export const fetchCurrentWeather = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
-    console.log("Текущая погода:", data);
     return data;
   } catch (error) {
     console.error("Ошибка:", error);

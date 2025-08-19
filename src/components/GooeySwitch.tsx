@@ -1,10 +1,21 @@
 import React from "react";
 import "../styles/GooeySwitch.css";
 
-export const GooeySwitch: React.FC = () => {
+type GooeySwitchProps = {
+  isCelsius: boolean;
+  onToggle: () => void;
+};
+
+export const GooeySwitch: React.FC<GooeySwitchProps> = ({ isCelsius, onToggle }) => {
   return (
     <div className="gooey-toggle">
-      <input type="checkbox" id="gooey" className="toggle-input" />
+       <input
+        type="checkbox"
+        id="gooey"
+        className="toggle-input"
+        checked={!isCelsius}
+        onChange={onToggle}
+      />
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 292 142"
