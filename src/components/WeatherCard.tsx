@@ -1,32 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/WeatherCard.css'
 import SearchBar from './SearchBar';
-import { ReactComponent as Point } from '../assests/Point.svg';
+
 import { ReactComponent as Humidity } from '../assests/Humidity.svg';
 import { ReactComponent as Wind } from '../assests/Wind.svg';
-import {fetchCurrentWeather, fetchWeatherForecast} from '../weatherApi';
+import {fetchCurrentWeather, fetchWeatherForecast, getCityByCoords} from '../weatherApi';
 import { transformForecastData, DailyForecast } from "../utils/transformForecastData";
 import { GooeySwitch } from './GooeySwitch';
 import ForecastCardList from './ForecastCardList';
 import { formatDateShort } from '../utils/formatDate';
+import { convertTemp } from "../utils/convertTemp";
+import { getUserLocation } from '../utils/getUserLocation';
 
 interface CityOption {
-  name: string;
+    name: string;   
+  localName: string; 
+  state?: string;
   country: string;
   lat: number;
   lon: number;
 }
 
 const WeatherCard: React.FC = () => {
+  const [selectedCityName, setSelectedCityName] = useState<string>("");
   const [weatherData, setWeatherData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCelsius, setIsCelsius] = useState(true);
 
-const displayTemp = weatherData?.main
-  ? isCelsius
-    ? Math.round(weatherData.main.temp)
-    : Math.round(weatherData.main.temp * 9/5 + 32)
-  : "--";
+// const displayTemp = weatherData?.main
+//   ? isCelsius
+//     ? Math.round(weatherData.main.temp)
+//     : Math.round(weatherData.main.temp * 9/5 + 32)
+//   : "--";
 
 const [dailyForecasts, setDailyForecasts] = useState<DailyForecast[]>([]);
 const [forecastData, setForecastData] = useState<any>(null);
@@ -50,6 +55,7 @@ const handleSearch = async (selectedCity: CityOption) => {
   setForecastData([]);
 
   try {
+    setSelectedCityName(selectedCity.localName);
     const data = await fetchCurrentWeather(selectedCity.lat, selectedCity.lon);
     setWeatherData(data);
 
@@ -58,17 +64,31 @@ const handleSearch = async (selectedCity: CityOption) => {
     setError("Не удалось получить данные о погоде");
   }
 };
+const handleDetectLocation = async () => {
+  try {
+    const { lat, lon } = await getUserLocation();
+    const data = await fetchCurrentWeather(lat, lon);
+    setWeatherData(data);
+
+    await handleForecast(lat, lon);
+    const city = await getCityByCoords(lat, lon);
+    if (city) {
+      setSelectedCityName(city.localName || city.name);
+    }
+  } catch (err) {
+    setError("Не удалось определить местоположение");
+  }
+};
 
   return (
     <div className='wrapper'>
-        <SearchBar onSearch={handleSearch}/>
+        <SearchBar onSearch={handleSearch} onLocationSearch={handleDetectLocation}/>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {weatherData && (
       <div className="weather-grid">
         <div className="city-date-info">
           <div className="cityName">
-            <Point />
-            <div>{weatherData.name}</div>
+            <div>{selectedCityName}</div>
           </div>
           <div>{formatDateShort(weatherData.dt)}</div>
         </div>
@@ -81,22 +101,22 @@ const handleSearch = async (selectedCity: CityOption) => {
         </div>
 
       <div className="weather-main">
-        <div>{displayTemp}°{isCelsius ? "C" : "F"}</div>
+        <div>{convertTemp(weatherData.main.temp, isCelsius)}{isCelsius ? "°C" : "°F"}</div>
         <div className="description">{weatherData?.weather?.[0]?.description || ""}</div>
       </div>
 
         <div className="humidity">
           <Humidity/>
-          <div>Влажность <br/>{weatherData.main.humidity}%</div>
+          <div>Humidity <br/>{weatherData.main.humidity}%</div>
         </div>
 
         <div className="wind">
           <Wind/>
-          <div>Ветер <br/>{weatherData.wind.speed}м/с</div>
+          <div>Wind <br/>{weatherData.wind.speed}m/s</div>
         </div>
       </div>
       )}
-      {dailyForecasts.length > 0 && <ForecastCardList forecasts={dailyForecasts} />}
+      {dailyForecasts.length > 0 && <ForecastCardList forecasts={dailyForecasts.slice(1)} isCelsius={isCelsius}/>}
     </div>
   );
 };

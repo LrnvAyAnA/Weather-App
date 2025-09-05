@@ -7,7 +7,8 @@
   overflow-y: hidden;
   scroll-behavior:inherit;
   padding-bottom: 10px;
-  margin-top: 20px;
+  /* margin-top: auto; */
+  /* margin-bottom: 20px; */
 }
 /* .forecast-list::-webkit-scrollbar-track {
   background: #f0f0f0;
@@ -51,5 +52,5 @@
 }
 
 .forecast-temp {
-  font-size: 18px;
+  font-size: 15px;
 }

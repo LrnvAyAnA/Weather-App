@@ -7,7 +7,7 @@ export interface DailyForecast {
 
 export const transformForecastData = (forecastData: any): DailyForecast[] => {
   if (!forecastData?.list) return [];
- console.log("Исходный массив forecastData.list:", forecastData.list);
+//  console.log("Исходный массив forecastData.list:", forecastData.list);
   const grouped: Record<string, { min: number; max: number; icon: string }> = {};
 
   forecastData.list.forEach((item: any) => {

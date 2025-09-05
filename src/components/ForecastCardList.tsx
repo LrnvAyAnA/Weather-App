@@ -5,9 +5,10 @@ import { useEffect, useRef } from "react";
 
 interface ForecastCardListProps {
   forecasts: DailyForecast[];
+  isCelsius: boolean;
 }
 
-const ForecastCardList: React.FC<ForecastCardListProps> = ({ forecasts }) => {
+const ForecastCardList: React.FC<ForecastCardListProps> = ({ forecasts, isCelsius }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -32,6 +33,7 @@ const ForecastCardList: React.FC<ForecastCardListProps> = ({ forecasts }) => {
           icon={f.icon}
           min={f.min}
           max={f.max}
+          isCelsius={isCelsius}
         />
       ))}
     </div>

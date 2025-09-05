@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ReactComponent as Search } from '../assests/Search.svg'
+import { ReactComponent as Point } from '../assests/Point.svg';
 import '../styles/WeatherCard.css'
 import { getCitySuggestions } from "../weatherApi";
+import { getUserLocation } from "../utils/getUserLocation";
 
 interface CityOption {
-  name: string;
+    name: string;     
+  localName: string;  
+  state?: string;
   country: string;
   lat: number;
   lon: number;
@@ -12,9 +16,10 @@ interface CityOption {
 
 interface SearchBarProps {
   onSearch: (city: CityOption) => void;
+  onLocationSearch: (coords: { lat: number; lon: number }) => void; // новый проп
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch,onLocationSearch  }) => {
   const [city, setCity] = useState("");
   const [suggestions, setSuggestions] = useState<CityOption[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -72,6 +77,15 @@ const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   }
 };
 
+const handleLocationClick = async () => {
+  try {
+    const coords = await getUserLocation();
+    onLocationSearch(coords);
+  } catch {
+    alert("Не удалось определить местоположение");
+  }
+};
+
 const handleSelect = (city: CityOption) => {
   onSearch(city);    
   setCity("");       
@@ -91,6 +105,9 @@ const handleSelect = (city: CityOption) => {
       />
       <button onClick={() => setCity("")} className="buttonSearch">
         <Search width="24" height="24" />
+      </button>
+      <button className="butLocation" onClick={handleLocationClick}>
+        <Point/>
       </button>
     </div>  
    <ul
