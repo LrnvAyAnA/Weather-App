@@ -82,39 +82,43 @@ const handleDetectLocation = async () => {
 
   return (
     <div className='wrapper'>
-        <SearchBar onSearch={handleSearch} onLocationSearch={handleDetectLocation}/>
+        <div className='header-bar'>
+          <SearchBar onSearch={handleSearch} onLocationSearch={handleDetectLocation}/>
+          <GooeySwitch isCelsius={isCelsius} onToggle={() => setIsCelsius(!isCelsius)} /> 
+        </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {weatherData && (
-      <div className="weather-grid">
-        <div className="city-date-info">
-          <div className="cityName">
+        <div className="grid">
+          <div className='city-date-info'>
+            <div className="cityName">
             <div>{selectedCityName}</div>
           </div>
           <div>{formatDateShort(weatherData.dt)}</div>
-        </div>
-        <GooeySwitch isCelsius={isCelsius} onToggle={() => setIsCelsius(!isCelsius)} />
-        <div className="weather-icon">
-          <img
-            src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
-            alt={weatherData.weather[0].description}
-          />
+          </div>
+          {/* <div>
+            <div className="weather-icon">
+              <img
+                src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
+                alt={weatherData.weather[0].description}
+              />
+            </div>
+            <div className="weather-main">
+              <div>{convertTemp(weatherData.main.temp, isCelsius)}{isCelsius ? "°C" : "°F"}</div>
+              <div className="description">{weatherData?.weather?.[0]?.description || ""}</div>
+            </div>
+             <div className='right-side'>
+              <div className="humidity">
+                <Humidity/>
+                <div>Humidity <br/>{weatherData.main.humidity}%</div>
+              </div>
+              <div className="wind">
+                <Wind/>
+                <div>Wind <br/>{weatherData.wind.speed}m/s</div>
+              </div>
+            </div>
+          </div> */}
         </div>
 
-      <div className="weather-main">
-        <div>{convertTemp(weatherData.main.temp, isCelsius)}{isCelsius ? "°C" : "°F"}</div>
-        <div className="description">{weatherData?.weather?.[0]?.description || ""}</div>
-      </div>
-
-        <div className="humidity">
-          <Humidity/>
-          <div>Humidity <br/>{weatherData.main.humidity}%</div>
-        </div>
-
-        <div className="wind">
-          <Wind/>
-          <div>Wind <br/>{weatherData.wind.speed}m/s</div>
-        </div>
-      </div>
       )}
       {dailyForecasts.length > 0 && <ForecastCardList forecasts={dailyForecasts.slice(1)} isCelsius={isCelsius}/>}
     </div>

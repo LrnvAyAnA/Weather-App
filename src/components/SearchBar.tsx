@@ -94,33 +94,34 @@ const handleSelect = (city: CityOption) => {
 };
 
   return (
-    <div className="search">
-    <div className="searchBar">
-      <input
-        type="text"
-        value={city}
-        onChange={handleInputChange}
-        placeholder="Search city"
-        className="input"
-      />
-      <button onClick={() => setCity("")} className="buttonSearch">
-        <Search width="24" height="24" />
-      </button>
-      <button className="butLocation" onClick={handleLocationClick}>
-        <Point/>
-      </button>
-    </div>  
-   <ul
-  ref={listRef}
-  className={`suggestions ${isVisible ? "show" : ""}`}
->
-  {suggestions.map((option, i) => (
-    <li key={i} onClick={() => handleSelect(option)}>
-      {option.name}, {option.country}
-    </li>
-  ))}
-</ul>
-    </div>
+    <div className="searchBarWrapper">
+  <div className="searchBar">
+    <input
+      type="text"
+      value={city}
+      onChange={handleInputChange}
+      placeholder="Search city"
+      className="input"
+    />
+    <button onClick={() => setCity("")} className="buttonSearch">
+      <Search width="24" height="24" />
+    </button>
+    <button className="butLocation" onClick={handleLocationClick}>
+      <Point/>
+    </button>
+  </div>
+
+  <ul
+    ref={listRef}
+    className={`suggestions ${isVisible ? "show" : ""}`}
+  >
+    {suggestions.map((option, i) => (
+      <li key={i} onClick={() => handleSelect(option)}>
+        {option.name}, {option.country}
+      </li>
+    ))}
+  </ul>
+</div>
   );
 };
 

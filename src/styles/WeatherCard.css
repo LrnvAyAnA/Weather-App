@@ -1,28 +1,45 @@
 .wrapper {
-    width: 30vw;
-    height: 80vh;
-    background-color: rgba(0, 0, 0, 0.39);
-    border-radius: 25px;
-    backdrop-filter: blur(3px);
-    box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
-    border: 1px solid rgba(255, 255, 255, 0.288);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 36px;
+  width: clamp(400px, 50vw, 850px); 
+  height: clamp(500px, 80vh, 800px); 
+  background-color: rgba(0, 0, 0, 0.39);
+  border-radius: 25px;
+  backdrop-filter: blur(3px);
+  box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
+  border: 1px solid rgba(255, 255, 255, 0.288);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 36px;
+  padding-inline: 75px;
+}
+
+.header-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .weather-grid {
   display: grid;
+  column-gap: clamp(10px, 3vw, 40px);
+  row-gap: clamp(5px, 2vh, 20px);
   padding-left: 20px;
   padding-right: 20px;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto;
-  column-gap: 5vw;
+  /* column-gap: 5vw; */
   margin-bottom: 20px;
   align-items: start;
-  row-gap: 5%;
+  /* row-gap: 5%; */
   color: #eaeaea;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  left:0;
 }
 
 /* Левая колонка */
@@ -32,8 +49,6 @@
   justify-self: start;
 }
 
-/* Правая колонка */
-.gooey-toggle,
 .weather-main,
 .wind {
   justify-self: end;
@@ -44,27 +59,29 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 20px;
+  font-size: clamp(18px, 2vw, 27px);
+  color: #eaeaea;
+  
 }
 
 .cityName {
   display: flex;
   gap: 8px;
-  font-size: 27px;
+  font-size: clamp(25px, 3vw, 37px);
 }
 
 .weather-main {
   text-align: end;
-  font-size: 50px;
+  font-size: clamp(25px, 5vw, 45px);
 }
 
 .weather-icon img {
-  width: 150px;
-  height: auto;
+  width: clamp(100px, 10vw, 150px);
+  height: clamp(100px, 10vw, 150px);
 }
 
 .description {
-  font-size: 25px;
+  font-size: clamp(18px, 2vw, 25px);
 }
 
 .unit-toggle button {
@@ -86,23 +103,21 @@
   justify-content: center;
 }
 
-.search{
-  display: flex;
-  width: 75%;
-  flex-direction: column; 
-  align-items: center;
+.searchBarWrapper {
+  position: relative;
+  width: clamp(200px, 65%, 500px);
 }
 
 .searchBar {
+  background-color: rgba(0, 0, 0, 0.61);
+  box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  padding-left: 25px;
+  padding-right: 25px;
+  justify-content: space-between;
   width: 100%;
-    background-color: rgba(0, 0, 0, 0.61);
-      box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    padding-left: 25px;
-    padding-right: 25px;
-    justify-content: space-between;
 }
 
 .input {
@@ -120,12 +135,16 @@
 }
 
 .suggestions {
+  position: absolute;
+  width: 100%;
+  top:100%;
+  left:0px;
+  z-index: 10;
   transform: scaleY(0);
   transform-origin: top;
   transition: transform 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6), opacity 0.3s ease;
   opacity: 0;
   pointer-events: none;
-  width: 100%;
   background: rgba(0, 0, 0, 0.61);
   border-radius: 30px;
   list-style: none;
@@ -137,6 +156,7 @@
 }
 
 .suggestions.show {
+  position: absolute;
   transform: scaleY(1);
   opacity: 1;
   pointer-events: auto;
@@ -167,57 +187,5 @@
     cursor: pointer;
 }
 
-.switch {
-  position: relative;
-  width: 70px;
-  height: 34px;
-}
 
-.switch input {
-  display: none;
-}
 
-.switch label {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #444;
-  border-radius: 34px;
-  position: relative;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-/* сам шарик */
-.blob {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 28px;
-  height: 28px;
-  background: white;
-  border-radius: 50%;
-  transition: all 0.5s ease;
-}
-
-/* капля справа при включении */
-.switch input:checked + label .blob {
-  animation: gooRight 0.5s ease forwards;
-}
-
-@keyframes gooRight {
-  0% {
-    transform: translateX(0) scale(1,1);
-  }
-  30% {
-    transform: translateX(18px) scale(1.6,0.6); /* правая сторона тянется */
-    border-radius: 50% 50% 50% 50%;
-  }
-  60% {
-    transform: translateX(28px) scale(1.1,1); /* шарик почти справа */
-    border-radius: 50%;
-  }
-  100% {
-    transform: translateX(36px) scale(1,1); /* шарик в норме */
-  }
-}
