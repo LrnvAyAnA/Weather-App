@@ -6,7 +6,8 @@
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior:inherit;
-  padding-bottom: 10px; 
+  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .forecast-card {

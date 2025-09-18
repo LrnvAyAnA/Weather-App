@@ -95,28 +95,40 @@ const handleDetectLocation = async () => {
           </div>
           <div>{formatDateShort(weatherData.dt)}</div>
           </div>
-          {/* <div>
-            <div className="weather-icon">
-              <img
-                src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
-                alt={weatherData.weather[0].description}
-              />
-            </div>
-            <div className="weather-main">
-              <div>{convertTemp(weatherData.main.temp, isCelsius)}{isCelsius ? "°C" : "°F"}</div>
-              <div className="description">{weatherData?.weather?.[0]?.description || ""}</div>
-            </div>
-             <div className='right-side'>
-              <div className="humidity">
-                <Humidity/>
-                <div>Humidity <br/>{weatherData.main.humidity}%</div>
+            <div className="weather-top">
+              <div className="weather-main-info">
+                <div className="weather-icon">
+                  <img
+                    src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
+                    alt={weatherData.weather[0].description}
+                  />
+                </div>
+                <div className="weather-temp-info">
+                  <div className="weather-temp">
+                    {convertTemp(weatherData.main.temp, isCelsius)}
+                    {isCelsius ? "°C" : "°F"}
+                  </div>
+                  <div className="weather-description">
+                    {weatherData?.weather?.[0]?.description || ""}
+                  </div>
+                </div>
               </div>
-              <div className="wind">
-                <Wind/>
-                <div>Wind <br/>{weatherData.wind.speed}m/s</div>
+
+              <div className="right-side">
+                <div className="humidity">
+                  <Humidity />
+                  <div>
+                    Humidity <br /> {weatherData.main.humidity}%
+                  </div>
+                </div>
+                <div className="wind">
+                  <Wind />
+                  <div>
+                    Wind speed<br /> {weatherData.wind.speed}m/s
+                  </div>
+                </div>
               </div>
             </div>
-          </div> */}
         </div>
 
       )}

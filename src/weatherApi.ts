@@ -12,6 +12,7 @@ export const fetchWeatherForecast = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
+    console.log("Ошибка отв", data);
     return data;
   } catch (error) {
     console.error("Ошибка:", error);

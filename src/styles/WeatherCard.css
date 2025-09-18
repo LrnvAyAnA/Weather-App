@@ -7,6 +7,7 @@
   box-shadow: 4px 4px 4px rgba(100, 100, 100, 0.164);
   border: 1px solid rgba(255, 255, 255, 0.288);
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
   align-items: center;
   padding-top: 36px;
@@ -30,20 +31,21 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto;
   /* column-gap: 5vw; */
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   align-items: start;
   /* row-gap: 5%; */
   color: #eaeaea;
 }
 
 .grid {
+  /* margin-top:clamp(10px, 4vh, 40px); */
   display: flex;
   flex-direction: column;
-  left:0;
+  width: 100%;
 }
 
 /* Левая колонка */
-.city-date-info,
+/* .city-date-info,
 .weather-icon,
 .humidity {
   justify-self: start;
@@ -52,7 +54,7 @@
 .weather-main,
 .wind {
   justify-self: end;
-}
+} */
 
 
 .city-date-info {
@@ -61,13 +63,37 @@
   gap: 4px;
   font-size: clamp(18px, 2vw, 27px);
   color: #eaeaea;
-  
+  align-self: flex-start;
 }
 
 .cityName {
   display: flex;
   gap: 8px;
   font-size: clamp(25px, 3vw, 37px);
+}
+
+.weather-top {
+  /* margin-top:clamp(10px, 4vh, 40px); */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.weather-main-info {
+  display: flex;
+  color: #eaeaea;
+  flex-direction: row;
+  align-items: center;
+  gap:10px;
+}
+
+.weather-temp {
+  font-size: clamp(30px, 6vw, 55px);
+}
+
+.weather-description {
+  font-size: clamp(16px, 3vw, 27px);
 }
 
 .weather-main {
@@ -94,13 +120,19 @@
   box-shadow: none;
 }
 
+.right-side {
+  display: flex;
+  flex-direction: column;
+}
+
 .humidity,
 .wind {
   display: flex;
   flex-direction: row;
   gap: 6px;
+  color: #EAEAEA; 
   font-size: 16px;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .searchBarWrapper {
