@@ -12,7 +12,6 @@ export const fetchWeatherForecast = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
-    console.log("Ошибка отв", data);
     return data;
   } catch (error) {
     console.error("Ошибка:", error);
@@ -63,7 +62,7 @@ export const getCitySuggestions = async (query: string) => {
 };
 
 export const getCityByCoords = async (lat: number, lon: number) => {
-  const url = `${BASE_URL}/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`;
+  const url = `${BASE_URL}/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}&lang=en`;
 
   try {
     const response = await fetch(url);
@@ -77,13 +76,25 @@ export const getCityByCoords = async (lat: number, lon: number) => {
       return null;
     }
 
+    const place = data[0];
+
+    // Логика выбора названия
+    let displayName = "";
+    if (place.local_names?.en) {
+      displayName = place.local_names.en; // если есть английское имя
+    } else if (place.state) {
+      displayName = `${place.state}, ${place.country}`; // fallback на регион
+    } else {
+      displayName = `${place.name}, ${place.country}`; // совсем fallback
+    }
+
     return {
-      name: data[0].name,
-      localName: data[0].local_names?.en || data[0].name,
-      country: data[0].country,
-      state: data[0].state,
-      lat: data[0].lat,
-      lon: data[0].lon,
+      name: place.name, // оригинальное (может быть русское)
+      displayName,      // нормализованное для UI
+      country: place.country,
+      state: place.state,
+      lat: place.lat,
+      lon: place.lon,
     };
   } catch (err) {
     console.error("Ошибка при обратном геокодинге:", err);

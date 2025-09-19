@@ -13,8 +13,8 @@ import { convertTemp } from "../utils/convertTemp";
 import { getUserLocation } from '../utils/getUserLocation';
 
 interface CityOption {
-    name: string;   
-  localName: string; 
+  name: string;   
+  displayName: string; 
   state?: string;
   country: string;
   lat: number;
@@ -27,11 +27,6 @@ const WeatherCard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isCelsius, setIsCelsius] = useState(true);
 
-// const displayTemp = weatherData?.main
-//   ? isCelsius
-//     ? Math.round(weatherData.main.temp)
-//     : Math.round(weatherData.main.temp * 9/5 + 32)
-//   : "--";
 
 const [dailyForecasts, setDailyForecasts] = useState<DailyForecast[]>([]);
 const [forecastData, setForecastData] = useState<any>(null);
@@ -55,7 +50,7 @@ const handleSearch = async (selectedCity: CityOption) => {
   setForecastData([]);
 
   try {
-    setSelectedCityName(selectedCity.localName);
+    setSelectedCityName(selectedCity.displayName || selectedCity.name);
     const data = await fetchCurrentWeather(selectedCity.lat, selectedCity.lon);
     setWeatherData(data);
 
@@ -72,8 +67,9 @@ const handleDetectLocation = async () => {
 
     await handleForecast(lat, lon);
     const city = await getCityByCoords(lat, lon);
+    console.log("city:", city);
     if (city) {
-      setSelectedCityName(city.localName || city.name);
+      setSelectedCityName(city.displayName);
     }
   } catch (err) {
     setError("Не удалось определить местоположение");

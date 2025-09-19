@@ -6,8 +6,8 @@ import { getCitySuggestions } from "../weatherApi";
 import { getUserLocation } from "../utils/getUserLocation";
 
 interface CityOption {
-    name: string;     
-  localName: string;  
+  name: string;     
+  displayName: string;  
   state?: string;
   country: string;
   lat: number;
