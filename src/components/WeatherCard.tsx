@@ -26,6 +26,13 @@ const WeatherCard: React.FC = () => {
   const [weatherData, setWeatherData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCelsius, setIsCelsius] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 580);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 580);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
 
 const [dailyForecasts, setDailyForecasts] = useState<DailyForecast[]>([]);
@@ -80,16 +87,29 @@ const handleDetectLocation = async () => {
     <div className='wrapper'>
         <div className='header-bar'>
           <SearchBar onSearch={handleSearch} onLocationSearch={handleDetectLocation}/>
-          <GooeySwitch isCelsius={isCelsius} onToggle={() => setIsCelsius(!isCelsius)} /> 
+          {!isMobile && (
+          <GooeySwitch
+            isCelsius={isCelsius}
+            onToggle={() => setIsCelsius(!isCelsius)}
+          />
+        )} 
         </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {weatherData && (
         <div className="grid">
           <div className='city-date-info'>
-            <div className="cityName">
+            <div>
+              <div className="cityName">
             <div>{selectedCityName}</div>
           </div>
           <div>{formatDateShort(weatherData.dt)}</div>
+              </div>
+          {isMobile && (
+              <GooeySwitch
+                isCelsius={isCelsius}
+                onToggle={() => setIsCelsius(!isCelsius)}
+              />
+            )}
           </div>
             <div className="weather-top">
               <div className="weather-main-info">

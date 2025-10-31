@@ -18,7 +18,7 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
       <div className="forecast-card">
     <div>{formatDateShort(new Date(date).getTime() / 1000)}</div>
     <img className="forecast-icon"src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt="" />
-    <div className="forecast-temp"> {convertTemp(min, isCelsius)}° / {convertTemp(max, isCelsius)}°</div>
+    <div className="forecast-temp"> {convertTemp(min, isCelsius)}°/{convertTemp(max, isCelsius)}°</div>
   </div>
   );
 };
