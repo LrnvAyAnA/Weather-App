@@ -1,22 +1,16 @@
-# 1. Указываем базовый образ — готовую среду с Node
-FROM node:18-alpine
+FROM node:18-bullseye
 
-# 2. Задаём рабочую директорию внутри контейнера
 WORKDIR /app
 
-# 3. Копируем package.json и устанавливаем зависимости
 COPY package*.json ./
-RUN npm install
 
-# 4. Копируем весь остальной код
+RUN npm install --legacy-peer-deps
+
 COPY . .
 
-# 5. Собираем проект
 RUN npm run build
 
-# 6. Используем простой сервер для отдачи собранного фронтенда
 RUN npm install -g serve
-CMD ["serve", "-s", "dist", "-l", "3000"]
 
-# 7. Открываем порт 3000
 EXPOSE 3000
+CMD ["serve", "-s", "build", "-l", "3000"]

@@ -4,7 +4,7 @@
 .wrapper {
   overflow: visible;
   width: clamp(400px, 80vw, 850px); 
-  height: clamp(500px, 70vh, 800px); 
+  height: clamp(600px, 70vh, 800px); 
   background-color: rgba(0, 0, 0, 0.39);
   border-radius: 25px;
   backdrop-filter: blur(3px);
@@ -236,11 +236,12 @@
     margin-left: auto;
   }
   .wrapper{
+    padding-top: 15px;
     overflow: hidden;
     padding-inline: 15px;
     margin-inline: 15px; 
     padding-inline: 15px;
-    height: 90vh;
+    height: 95vh;
   }
 
   .searchBarWrapper {
