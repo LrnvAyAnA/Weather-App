@@ -11,6 +11,7 @@ import ForecastCardList from './ForecastCardList';
 import { formatDateShort } from '../utils/formatDate';
 import { convertTemp } from "../utils/convertTemp";
 import { getUserLocation } from '../utils/getUserLocation';
+import WeatherSkeleton from './WeatherSkeleton';
 
 interface CityOption {
   name: string;   
@@ -24,6 +25,7 @@ interface CityOption {
 const WeatherCard: React.FC = () => {
   const [selectedCityName, setSelectedCityName] = useState<string>("");
   const [weatherData, setWeatherData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCelsius, setIsCelsius] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 580);
@@ -33,7 +35,11 @@ const WeatherCard: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+// useEffect(() => {
+//   // Через 3 секунды выключим загрузку, чтобы увидеть переход
+//   const timer = setTimeout(() => setIsLoading(false), 20000);
+//   return () => clearTimeout(timer);
+// }, []);
 
 const [dailyForecasts, setDailyForecasts] = useState<DailyForecast[]>([]);
 const [forecastData, setForecastData] = useState<any>(null);
@@ -55,6 +61,7 @@ const handleSearch = async (selectedCity: CityOption) => {
   setError(null);
   setWeatherData(null);
   setForecastData([]);
+  setIsLoading(true);
 
   try {
     setSelectedCityName(selectedCity.displayName || selectedCity.name);
@@ -64,9 +71,16 @@ const handleSearch = async (selectedCity: CityOption) => {
     await handleForecast(selectedCity.lat, selectedCity.lon);
   } catch (err) {
     setError("Не удалось получить данные о погоде");
+  } finally {
+    setIsLoading(false);
   }
 };
 const handleDetectLocation = async () => {
+  setError(null);
+  setWeatherData(null);
+  setForecastData([]);
+  setIsLoading(true);
+
   try {
     const { lat, lon } = await getUserLocation();
     const data = await fetchCurrentWeather(lat, lon);
@@ -74,12 +88,13 @@ const handleDetectLocation = async () => {
 
     await handleForecast(lat, lon);
     const city = await getCityByCoords(lat, lon);
-    console.log("city:", city);
     if (city) {
       setSelectedCityName(city.displayName);
     }
   } catch (err) {
     setError("Не удалось определить местоположение");
+  } finally {
+    setIsLoading(false);
   }
 };
 
@@ -95,7 +110,10 @@ const handleDetectLocation = async () => {
         )} 
         </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {weatherData && (
+      {isLoading ? (
+      <WeatherSkeleton />
+    ) : (
+      weatherData && (
         <div className="grid">
           <div className='city-date-info'>
             <div>
@@ -146,9 +164,10 @@ const handleDetectLocation = async () => {
               </div>
             </div>
         </div>
-
+      )
       )}
       {dailyForecasts.length > 0 && <ForecastCardList forecasts={dailyForecasts.slice(1)} isCelsius={isCelsius}/>}
+      {/* <WeatherSkeleton /> */}
     </div>
   );
 };
