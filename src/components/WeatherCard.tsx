@@ -11,7 +11,7 @@ import ForecastCardList from './ForecastCardList';
 import { formatDateShort } from '../utils/formatDate';
 import { convertTemp } from "../utils/convertTemp";
 import { getUserLocation } from '../utils/getUserLocation';
-import WeatherSkeleton from './WeatherSkeleton';
+import {WeatherSkeleton} from './WeatherSkeleton';
 
 interface CityOption {
   name: string;   
@@ -35,11 +35,6 @@ const WeatherCard: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-// useEffect(() => {
-//   // Через 3 секунды выключим загрузку, чтобы увидеть переход
-//   const timer = setTimeout(() => setIsLoading(false), 20000);
-//   return () => clearTimeout(timer);
-// }, []);
 
 const [dailyForecasts, setDailyForecasts] = useState<DailyForecast[]>([]);
 const [forecastData, setForecastData] = useState<any>(null);

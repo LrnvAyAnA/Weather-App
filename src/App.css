@@ -8,4 +8,16 @@
   background-position: center;
 }
 
+button, 
+input, 
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+button:active {
+  outline: none;
+  box-shadow: none;
+}
+
 /* url('../public/background.jpg') */

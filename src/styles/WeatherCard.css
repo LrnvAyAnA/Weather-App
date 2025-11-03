@@ -1,6 +1,7 @@
 *, *::before, *::after {
   box-sizing: border-box;
 }
+
 .wrapper {
   overflow: visible;
   width: clamp(400px, 80vw, 850px); 
