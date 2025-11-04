@@ -35,15 +35,11 @@
   padding-right: 20px;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto;
-  /* column-gap: 5vw; */
-  /* margin-bottom: 20px; */
   align-items: start;
-  /* row-gap: 5%; */
   color: #eaeaea;
 }
 
 .grid {
-  /* margin-top:clamp(10px, 4vh, 40px); */
   display: flex;
   flex-direction: column;
   width: 100%;

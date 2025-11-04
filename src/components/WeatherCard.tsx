@@ -96,7 +96,7 @@ const handleDetectLocation = async () => {
   return (
     <div className='wrapper'>
         <div className='header-bar'>
-          <SearchBar onSearch={handleSearch} onLocationSearch={handleDetectLocation}/>
+          <SearchBar onSearch={handleSearch} onLocationSearch={handleDetectLocation} setIsLoading={setIsLoading}/>
           {!isMobile && (
           <GooeySwitch
             isCelsius={isCelsius}
@@ -162,7 +162,6 @@ const handleDetectLocation = async () => {
       )
       )}
       {dailyForecasts.length > 0 && <ForecastCardList forecasts={dailyForecasts.slice(1)} isCelsius={isCelsius}/>}
-      {/* <WeatherSkeleton /> */}
     </div>
   );
 };

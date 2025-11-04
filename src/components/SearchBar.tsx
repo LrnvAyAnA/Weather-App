@@ -16,10 +16,11 @@ interface CityOption {
 
 interface SearchBarProps {
   onSearch: (city: CityOption) => void;
-  onLocationSearch: (coords: { lat: number; lon: number }) => void; // новый проп
+  onLocationSearch: (coords: { lat: number; lon: number }) => void;
+  setIsLoading: (value: boolean) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch,onLocationSearch  }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch,onLocationSearch,setIsLoading  }) => {
   const [city, setCity] = useState("");
   const [suggestions, setSuggestions] = useState<CityOption[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -78,11 +79,14 @@ const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 const handleLocationClick = async () => {
+  setIsLoading(true);
   try {
     const coords = await getUserLocation();
-    onLocationSearch(coords);
+    await onLocationSearch(coords);
   } catch {
     alert("Не удалось определить местоположение");
+  } finally {
+    setIsLoading(false);
   }
 };
 
