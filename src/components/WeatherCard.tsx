@@ -12,6 +12,7 @@ import { formatDateShort } from '../utils/formatDate';
 import { convertTemp } from "../utils/convertTemp";
 import { getUserLocation } from '../utils/getUserLocation';
 import {WeatherSkeleton} from './WeatherSkeleton';
+import {ForecastChart} from './ForecastChart';
 
 interface CityOption {
   name: string;   
@@ -55,12 +56,13 @@ const handleForecast = async (lat: number, lon: number) => {
 const handleSearch = async (selectedCity: CityOption) => {
   setError(null);
   setWeatherData(null);
-  setForecastData([]);
+  setForecastData(null);
   setIsLoading(true);
 
   try {
     setSelectedCityName(selectedCity.displayName || selectedCity.name);
     const data = await fetchCurrentWeather(selectedCity.lat, selectedCity.lon);
+    // console.log("Погода на день",await fetchWeatherDaily(selectedCity.lat, selectedCity.lon));
     setWeatherData(data);
 
     await handleForecast(selectedCity.lat, selectedCity.lon);
@@ -161,6 +163,7 @@ const handleDetectLocation = async () => {
         </div>
       )
       )}
+      <ForecastChart data={forecastData}/>
       {dailyForecasts.length > 0 && <ForecastCardList forecasts={dailyForecasts.slice(1)} isCelsius={isCelsius}/>}
     </div>
   );

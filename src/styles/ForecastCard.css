@@ -8,6 +8,7 @@
   scroll-behavior:inherit;
   padding-bottom: 20px;
   margin-bottom: 20px;
+  display: none;
 }
 
 .forecast-card {

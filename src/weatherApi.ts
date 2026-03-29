@@ -12,12 +12,34 @@ export const fetchWeatherForecast = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
+    console.log("fetchWeatherForecast:", data);
+
     return data;
   } catch (error) {
     console.error("Ошибка:", error);
     throw error;
   }
 };
+
+// export const fetchWeatherDaily = async (lat: number, lon: number) => {
+//   try {
+//     const response = await fetch(
+//       `${BASE_URL}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+//     );
+
+//     if (!response.ok) {
+//       throw new Error("Ошибка ответа от сервера");
+//     }
+
+//     const data = await response.json();
+//     console.log("fetchWeatherDaily:", data);
+
+//     return data;
+//   } catch (error) {
+//     console.error("Ошибка:", error);
+//     throw error;
+//   }
+// };
 
 export const fetchCurrentWeather = async (lat: number, lon: number) => {
   const url = `${BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
@@ -29,7 +51,7 @@ export const fetchCurrentWeather = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
-    console.log("Geo API response:", data);
+    // console.log("fetchCurrentWeather:", data);
     return data;
   } catch (error) {
     console.error("Ошибка:", error);
@@ -78,19 +100,19 @@ export const getCityByCoords = async (lat: number, lon: number) => {
 
     const place = data[0];
 
-    // Логика выбора названия
+
     let displayName = "";
     if (place.local_names?.en) {
-      displayName = place.local_names.en; // если есть английское имя
+      displayName = place.local_names.en; 
     } else if (place.state) {
-      displayName = `${place.state}, ${place.country}`; // fallback на регион
+      displayName = `${place.state}, ${place.country}`; 
     } else {
-      displayName = `${place.name}, ${place.country}`; // совсем fallback
+      displayName = `${place.name}, ${place.country}`; 
     }
 
     return {
-      name: place.name, // оригинальное (может быть русское)
-      displayName,      // нормализованное для UI
+      name: place.name, 
+      displayName,    
       country: place.country,
       state: place.state,
       lat: place.lat,
