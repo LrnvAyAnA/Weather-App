@@ -163,7 +163,7 @@ const handleDetectLocation = async () => {
         </div>
       )
       )}
-      <ForecastChart data={forecastData}/>
+      <ForecastChart data={forecastData} isCelsius={isCelsius}/>
       {dailyForecasts.length > 0 && <ForecastCardList forecasts={dailyForecasts.slice(1)} isCelsius={isCelsius}/>}
     </div>
   );
