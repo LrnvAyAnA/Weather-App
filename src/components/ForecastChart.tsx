@@ -41,6 +41,7 @@ export const ForecastChart = ({ data, isCelsius }: ForecastChartProps) => {
   const temps = list.map(item => Math.round(item.main.temp));
   const times = list.map(item => item.dt_txt.slice(11, 16));
 
+  
 const activeLabelPlugin = {
   id: "activeLabelPlugin",
   afterDraw(chart: any) {
@@ -49,7 +50,7 @@ const activeLabelPlugin = {
     const label = x.getLabelForValue(currentIndex);
     const xPos = x.getPixelForTick(currentIndex);
 
-    const yPos = chart.height-150;
+  const yPos = chart.scales.x.bottom ;
 
     ctx.save();
 
@@ -138,15 +139,15 @@ const pointRadius = temps.map((_, i) =>
         pointRadius: pointRadius,
         pointBackgroundColor: pointColors,
         pointHoverRadius: 8,
-        tension: 0.4,
+        tension: 0.3,
       },
     ],
   };
   const options = {
     layout: {
     padding: {
-      top: 100,    
-      bottom: 140,
+      top: 30,
+      bottom: 40,
       left:20,
       right:20
     },
@@ -185,5 +186,7 @@ const pointRadius = temps.map((_, i) =>
   
 };
 
-  return <Line plugins={[labelsPlugin, activeLabelPlugin]} options={options} data={chartData}/>
+  return <div style={{ height: "180px", width:'80%' }}>
+  <Line plugins={[labelsPlugin, activeLabelPlugin]} options={options} data={chartData}/>
+</div>
 };

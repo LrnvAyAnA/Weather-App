@@ -14,6 +14,12 @@ import { getUserLocation } from '../utils/getUserLocation';
 import {WeatherSkeleton} from './WeatherSkeleton';
 import {ForecastChart} from './ForecastChart';
 
+import Lottie from "lottie-react";
+import sunAnimation from "../assests/lottie/sun.json";
+import thunderstormAnimation from "../assests/lottie/brokenClouds.json";
+import { WeatherIcon } from './WeatherIcon';
+
+
 interface CityOption {
   name: string;   
   displayName: string; 
@@ -128,12 +134,14 @@ const handleDetectLocation = async () => {
           </div>
             <div className="weather-top">
               <div className="weather-main-info">
-                <div className="weather-icon">
+                <WeatherIcon type={weatherData.weather[0].main} size={140} />
+                {/* <Lottie animationData={thunderstormAnimation} style={{ width: 300, height: 300 }} /> */}
+                {/* <div className="weather-icon">
                   <img
                     src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
                     alt={weatherData.weather[0].description}
                   />
-                </div>
+                </div> */}
                 <div className="weather-temp-info">
                   <div className="weather-temp">
                     {convertTemp(weatherData.main.temp, isCelsius)}
@@ -163,7 +171,7 @@ const handleDetectLocation = async () => {
         </div>
       )
       )}
-      <ForecastChart data={forecastData} isCelsius={isCelsius}/>
+      {/* <ForecastChart data={forecastData} isCelsius={isCelsius}/> */}
       {dailyForecasts.length > 0 && <ForecastCardList forecasts={dailyForecasts.slice(1)} isCelsius={isCelsius}/>}
     </div>
   );
