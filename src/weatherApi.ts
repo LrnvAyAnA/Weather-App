@@ -12,7 +12,6 @@ export const fetchWeatherForecast = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
-    console.log("fetchWeatherForecast:", data);
 
     return data;
   } catch (error) {
@@ -20,26 +19,6 @@ export const fetchWeatherForecast = async (lat: number, lon: number) => {
     throw error;
   }
 };
-
-// export const fetchWeatherDaily = async (lat: number, lon: number) => {
-//   try {
-//     const response = await fetch(
-//       `${BASE_URL}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`
-//     );
-
-//     if (!response.ok) {
-//       throw new Error("Ошибка ответа от сервера");
-//     }
-
-//     const data = await response.json();
-//     console.log("fetchWeatherDaily:", data);
-
-//     return data;
-//   } catch (error) {
-//     console.error("Ошибка:", error);
-//     throw error;
-//   }
-// };
 
 export const fetchCurrentWeather = async (lat: number, lon: number) => {
   const url = `${BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;

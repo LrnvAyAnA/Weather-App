@@ -1,5 +1,5 @@
-export const convertTemp = (temp: number, isCelsius: boolean): string => {
+export const convertTemp = (temp: number, isCelsius: boolean): number => {
   return isCelsius
-    ? `${Math.round(temp)}`
-    : `${Math.round(temp * 9/5 + 32)}`;
+    ? temp
+    : temp * 9/5 + 32;
 };

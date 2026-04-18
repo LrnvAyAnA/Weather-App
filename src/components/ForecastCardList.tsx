@@ -6,9 +6,16 @@ import { useEffect, useRef } from "react";
 interface ForecastCardListProps {
   forecasts: DailyForecast[];
   isCelsius: boolean;
+  onSelect: (date: string) => void;
+  selectedDay: string | null;
 }
 
-const ForecastCardList: React.FC<ForecastCardListProps> = ({ forecasts, isCelsius }) => {
+const ForecastCardList: React.FC<ForecastCardListProps> = ({
+  forecasts,
+  isCelsius,
+  onSelect,
+  selectedDay
+}) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -24,16 +31,20 @@ const ForecastCardList: React.FC<ForecastCardListProps> = ({ forecasts, isCelsiu
     el.addEventListener("wheel", handleWheel, { passive: false });
     return () => el.removeEventListener("wheel", handleWheel);
   }, []);
+
   return (
     <div className="forecast-list" ref={containerRef}>
-      {forecasts.map(f => (
+      {forecasts.map((f) => (
         <ForecastCard
           key={f.date}
-          date={f.date}
+          weekday={f.weekday}
           icon={f.icon}
           min={f.min}
           max={f.max}
+          description={f.description}
+          isSelected={selectedDay === f.date}
           isCelsius={isCelsius}
+          onClick={() => onSelect(f.date)}
         />
       ))}
     </div>
