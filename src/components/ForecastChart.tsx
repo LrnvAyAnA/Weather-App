@@ -1,3 +1,4 @@
+import '../styles/WeatherCard.css'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,15 +30,19 @@ type ForecastData = {
 type ForecastChartProps = {
   data: ForecastData | null;
   isCelsius: boolean;
+  selectedDay: string | null;
 };
 
 
-export const ForecastChart = ({ data, isCelsius }: ForecastChartProps) => {
+export const ForecastChart = ({ data, isCelsius, selectedDay }: ForecastChartProps) => {
 
 
-  if (!data || !data.list) return null;
+  if (!data || !data.list || !selectedDay) return null;
 
-  const list = data.list.slice(0, 8);
+  // const list = data.list.slice(0, 8);
+  const list = data.list.filter(item =>
+  item.dt_txt.startsWith(selectedDay)
+);
   const temps = list.map(item => Math.round(item.main.temp));
   const times = list.map(item => item.dt_txt.slice(11, 16));
 
@@ -50,7 +55,7 @@ const activeLabelPlugin = {
     const label = x.getLabelForValue(currentIndex);
     const xPos = x.getPixelForTick(currentIndex);
 
-  const yPos = chart.scales.x.bottom ;
+  const yPos = chart.scales.x.bottom-10 ;
 
     ctx.save();
 
@@ -87,7 +92,6 @@ const labelsPlugin = {
       const meta = chart.getDatasetMeta(i);
 
       meta.data.forEach((point: any, index: number) => {
-        const value = dataset.data[index];
 
         ctx.save();
         ctx.font = "16px sans-serif";
@@ -96,9 +100,9 @@ const labelsPlugin = {
 
         
         ctx.fillText(
-          `${value}°`,
+          `${Math.round(convertTemp(dataset.data[index], isCelsius))}°`,
           point.x,
-          point.y - 20
+          point.y - 15
         );
 
         ctx.restore();
@@ -134,7 +138,7 @@ const pointRadius = temps.map((_, i) =>
     datasets: [
       {
         label: "Temp",
-        data: temps.map(t => convertTemp(t, isCelsius)),
+        data: temps,
         borderColor: "rgba(255, 255, 255, 0.35)",
         pointRadius: pointRadius,
         pointBackgroundColor: pointColors,
@@ -148,8 +152,8 @@ const pointRadius = temps.map((_, i) =>
     padding: {
       top: 30,
       bottom: 40,
-      left:20,
-      right:20
+      left:-10,
+      right:-10
     },
   },
   plugins: {
@@ -161,6 +165,7 @@ const pointRadius = temps.map((_, i) =>
 },
 },
     responsive: true,
+    maintainAspectRatio:false,
     scales: {
       x: {
         grid: {
@@ -186,7 +191,10 @@ const pointRadius = temps.map((_, i) =>
   
 };
 
-  return <div style={{ height: "180px", width:'80%' }}>
-  <Line plugins={[labelsPlugin, activeLabelPlugin]} options={options} data={chartData}/>
+  return <div className="chart-wrapper">
+  <div className="chart-inner">
+    <Line key={isCelsius ? "c" : "f"} plugins={[labelsPlugin, activeLabelPlugin]} options={options} data={chartData}/>
+  </div>
 </div>
+{/* <Line plugins={[labelsPlugin, activeLabelPlugin]} options={options} data={chartData}/> */}
 };

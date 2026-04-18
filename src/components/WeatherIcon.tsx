@@ -1,5 +1,5 @@
 import Lottie from "lottie-react";
-import { weatherIconMap, DEFAULT_ICON } from "../constants/weatherIconMap";
+import { weatherIconMap, DEFAULT_ICON } from "../features/constants/weatherIconMap";
 
 interface Props {
   type: string;

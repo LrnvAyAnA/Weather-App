@@ -1,27 +1,46 @@
 import React from "react";
 import "../styles/ForecastCard.css";
-import { formatDateShort } from "../utils/formatDate";
 import { convertTemp } from "../utils/convertTemp";
 
 interface ForecastCardProps {
-  date: string;
+  weekday: string;
   icon: string;
   min: number;
   max: number;
   isCelsius: boolean;
+  description: string;
+  onClick: () => void;
+  isSelected: boolean;
 }
 
 const ForecastCard: React.FC<ForecastCardProps> = ({
-  date, icon, min, max, isCelsius
+  weekday,
+  icon,
+  min,
+  max,
+  isCelsius,
+  description,
+  onClick,
+  isSelected
 }) => {
-   return (
-      <div className="forecast-card">
-    <div>{formatDateShort(new Date(date).getTime() / 1000)}</div>
-    <div className="">
-    <img className="forecast-icon"src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt="" />
-    </div>
-    <div className="forecast-temp"> {convertTemp(min, isCelsius)}°/{convertTemp(max, isCelsius)}°</div>
-  </div>
+  return (
+    <button className={`forecast-card ${isSelected ? "active" : ""}`} onClick={onClick}>
+      <div className="forecast-icon">
+        <img
+          
+          src={`https://openweathermap.org/img/wn/${icon}@2x.png`}
+          alt=""
+        />
+      </div>
+      <div className="forecast-date">
+        <div className="weekday">{weekday}</div>
+        <div className="description">{description}</div>
+      </div>
+      <div className="forecast-temp">
+        {" "}
+        {Math.round(convertTemp(min, isCelsius))}°/{Math.round(convertTemp(max, isCelsius))}°
+      </div>
+    </button>
   );
 };
 
