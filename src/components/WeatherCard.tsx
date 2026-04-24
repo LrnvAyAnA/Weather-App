@@ -23,6 +23,7 @@ import { ForecastChart } from "./ForecastChart";
 import { WeatherIcon } from "./WeatherIcon";
 import { formatMainWeatherDate } from "../features/weather/weatherFormat";
 
+import { ForecastData } from "../types/weather";
 interface CityOption {
   name: string;
   displayName: string;
@@ -41,7 +42,6 @@ const WeatherCard: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 580);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
-
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 580);
     window.addEventListener("resize", handleResize);
@@ -49,17 +49,35 @@ const WeatherCard: React.FC = () => {
   }, []);
 
   const [dailyForecasts, setDailyForecasts] = useState<DailyForecast[]>([]);
-  const [forecastData, setForecastData] = useState<any>(null);
+  const [forecastData, setForecastData] = useState<ForecastData | null>(null);
+
   useEffect(() => {
     if (!forecastData) return;
-    setDailyForecasts(transformForecastData(forecastData));
+
+    const transformed = transformForecastData(forecastData);
+    setDailyForecasts(transformed);
+
+    if (transformed.length > 0) {
+      setSelectedDay(transformed[0].date);
+    }
   }, [forecastData]);
+
+
+  if (!forecastData) return null;
+
+
+  const filteredList =
+    forecastData.list.filter((item) =>
+      item.dt_txt.startsWith(selectedDay ?? ""),
+    ) || [];
+
+  const isTodaySelected = selectedDay === new Date().toISOString().split("T")[0];
 
   const handleForecast = async (lat: number, lon: number) => {
     try {
       const data = await fetchWeatherForecast(lat, lon);
       setForecastData(data);
-      console.log("это дата",data);
+      console.log("это дата", data);
     } catch (err) {
       console.error("Не удалось получить прогноз", err);
     }
@@ -72,7 +90,7 @@ const WeatherCard: React.FC = () => {
     setIsLoading(true);
 
     try {
-      setSelectedCityName(`${selectedCity.displayName || selectedCity.name}, ${selectedCity.country}`);
+      setSelectedCityName(`${selectedCity.displayName || selectedCity.name}`);
       const data = await fetchCurrentWeather(
         selectedCity.lat,
         selectedCity.lon,
@@ -89,7 +107,7 @@ const WeatherCard: React.FC = () => {
   const handleDetectLocation = async () => {
     setError(null);
     setWeatherData(null);
-    setForecastData([]);
+    setForecastData(null);
     setIsLoading(true);
 
     try {
@@ -100,7 +118,7 @@ const WeatherCard: React.FC = () => {
       await handleForecast(lat, lon);
       const city = await getCityByCoords(lat, lon);
       if (city) {
-        setSelectedCityName(`${city.displayName}, ${city.country}`);
+        setSelectedCityName(`${city.displayName}`);
       }
     } catch (err) {
       setError("Не удалось определить местоположение");
@@ -174,7 +192,7 @@ const WeatherCard: React.FC = () => {
 
               {dailyForecasts.length > 0 && (
                 <ForecastCardList
-                  forecasts={dailyForecasts.slice(1)}
+                  forecasts={dailyForecasts.slice(0)}
                   isCelsius={isCelsius}
                   onSelect={setSelectedDay}
                   selectedDay={selectedDay}
@@ -184,7 +202,12 @@ const WeatherCard: React.FC = () => {
           </div>
         )
       )}
-      <ForecastChart data={forecastData} isCelsius={isCelsius} selectedDay={selectedDay}/>
+      <ForecastChart
+        data={filteredList}
+        isCelsius={isCelsius}
+        timezone={forecastData.city.timezone}
+        showCurrentPoint={isTodaySelected}
+      />
     </div>
   );
 };
