@@ -11,7 +11,7 @@ import {
 import { ForecastItem } from "../types/weather";
 import { Line } from "react-chartjs-2";
 import { convertTemp } from "../utils/convertTemp";
-
+import { useEffect, useRef, useState } from "react";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -26,56 +26,84 @@ type ForecastChartProps = {
   isCelsius: boolean;
   timezone: number;
   showCurrentPoint: boolean;
-  // selectedDay: string | null;
 };
 
 export const ForecastChart = ({
   data,
   isCelsius,
   timezone,
-  showCurrentPoint
+  showCurrentPoint,
 }: ForecastChartProps) => {
- if (!data.length) return null;
-  const now = Date.now();
-  const nowInCity = now + timezone * 1000;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  const firstTime = data[0]?.dt * 1000;
-  const step = 3 * 60 * 60 * 1000;
 
-  const currentPosition = (nowInCity - firstTime) / step;
+useEffect(() => {
+  const el = scrollRef.current;
+  if (!el) return;
+
+  const onWheel = (e: WheelEvent) => {
+  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+    e.preventDefault();
+    el.scrollLeft += e.deltaY * 0.8;
+  }
+};
+
+  el.addEventListener("wheel", onWheel, { passive: false });
+
+  return () => el.removeEventListener("wheel", onWheel);
+}, []);
+
+
+  if (!data.length) return null;
+  // const nowInCity = Date.now() + timezone * 1000;
+  // const firstTimeInCity = data[0]?.dt * 1000 + timezone * 1000;
+  // const step = 3 * 60 * 60 * 1000;
+
+  // const currentPosition = (nowInCity - firstTimeInCity) / step;
 
   const temps = data.map((item) => Math.round(item.main.temp));
+  console.log(temps);
   const times = data.map((item) => item.dt_txt.slice(11, 16));
 
-  const activeLabelPlugin = {
-    id: "activeLabelPlugin",
-    afterDraw(chart: any) {
-       if (!showCurrentPoint) return;
-      const { ctx } = chart;
-      const meta = chart.getDatasetMeta(0);
+  // const activeLabelPlugin = {
+  //   id: "activeLabelPlugin",
+  //   afterDraw(chart: any) {
+  //     const show = chart.options.plugins.showCurrentPoint;
 
-      const leftIndex = Math.floor(currentPosition);
-      const rightIndex = Math.ceil(currentPosition);
-      const fraction = currentPosition % 1;
+  //     if (!show) return;
+  //     if (data.length < 2) return;
 
-      const leftPoint = meta.data[leftIndex];
-      const rightPoint = meta.data[rightIndex];
+  //     const { ctx } = chart;
 
-      if (!leftPoint || !rightPoint) return;
+  //     const maxIndex = data.length - 1;
 
-      const xPos = leftPoint.x + (rightPoint.x - leftPoint.x) * fraction;
-      const yPos = leftPoint.y + (rightPoint.y - leftPoint.y) * fraction;
+  //     const safePosition = Math.min(Math.max(currentPosition, 0), maxIndex);
 
-      ctx.save();
+  //     const leftIndex = Math.floor(safePosition);
+  //     const rightIndex = Math.min(leftIndex + 1, maxIndex);
 
-      ctx.beginPath();
-      ctx.arc(xPos, yPos, 6, 0, Math.PI * 2);
-      ctx.fillStyle = "#ffcc00";
-      ctx.fill();
+  //     const fraction = safePosition - leftIndex;
+  //     const meta = chart.getDatasetMeta(0);
 
-      ctx.restore();
-    },
-  };
+  //     const leftPoint = meta.data[leftIndex];
+  //     const rightPoint = meta.data[rightIndex];
+
+  //     if (!leftPoint || !rightPoint) return;
+
+  //     const xPos = leftPoint.x + (rightPoint.x - leftPoint.x) * fraction;
+  //     const yPos = leftPoint.y + (rightPoint.y - leftPoint.y) * fraction;
+  //     console.log("plugin draw", showCurrentPoint);
+  //     ctx.save();
+
+  //     ctx.beginPath();
+  //     ctx.arc(xPos, yPos, 6, 0, Math.PI * 2);
+  //     ctx.fillStyle = "#ffcc00";
+  //     ctx.fill();
+
+  //     ctx.restore();
+  //   },
+  // };
   const labelsPlugin = {
     id: "labelsPlugin",
     afterDatasetsDraw(chart: any) {
@@ -124,6 +152,7 @@ export const ForecastChart = ({
       },
     },
     plugins: {
+      showCurrentPoint,
       legend: {
         display: false,
       },
@@ -156,18 +185,33 @@ export const ForecastChart = ({
       },
     },
   };
+const pointWidth = 150;
+const chartWidth = data.length * pointWidth;
+  const handleScroll = () => {
+  const el = scrollRef.current;
+  if (!el) return;
 
+  const index = Math.round(el.scrollLeft / pointWidth);
+  setActiveIndex(index);
+};
   return (
-    <div className="chart-wrapper">
-      <div className="chart-inner">
+  <>
+    <div className="chart-date">
+      {data[activeIndex] &&
+        new Date(data[activeIndex].dt * 1000).toLocaleDateString()}
+    </div>
+
+    <div className="chart-wrapper" ref={scrollRef} onScroll={handleScroll}>
+      <div className="chart-inner" style={{ width: chartWidth }}>
         <Line
           key={isCelsius ? "c" : "f"}
-          plugins={[labelsPlugin, activeLabelPlugin]}
+          plugins={[labelsPlugin]}
           options={options}
           data={chartData}
         />
       </div>
     </div>
+  </>
   );
   {
     /* <Line plugins={[labelsPlugin, activeLabelPlugin]} options={options} data={chartData}/> */
