@@ -63,16 +63,14 @@ const WeatherCard: React.FC = () => {
   }, [forecastData]);
 
 
-  if (!forecastData) return null;
 
 
   const filteredList =
-    forecastData.list.filter((item) =>
+    forecastData?.list.filter((item) =>
       item.dt_txt.startsWith(selectedDay ?? ""),
     ) || [];
 
   const isTodaySelected = selectedDay === new Date().toISOString().split("T")[0];
-
   const handleForecast = async (lat: number, lon: number) => {
     try {
       const data = await fetchWeatherForecast(lat, lon);
@@ -203,9 +201,9 @@ const WeatherCard: React.FC = () => {
         )
       )}
       <ForecastChart
-        data={filteredList}
+        data={forecastData?.list ?? []}
         isCelsius={isCelsius}
-        timezone={forecastData.city.timezone}
+        timezone={forecastData?.city.timezone ?? 0}
         showCurrentPoint={isTodaySelected}
       />
     </div>

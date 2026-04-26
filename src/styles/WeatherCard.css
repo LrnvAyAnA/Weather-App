@@ -212,12 +212,21 @@
 .chart-wrapper {
   width: 100%;
   height: 200px;
-   overflow-x:hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   padding-top: 10px;
 }
 
+.chart-date {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: left;
+   width: 100%;
+}
+
 .chart-wrapper::-webkit-scrollbar {
-  height: 4px;
+  height: 6px;
 }
 
 .chart-wrapper::-webkit-scrollbar-thumb {
@@ -226,7 +235,8 @@
 }
 
 .chart-inner {
-  min-width: 600px;
+  min-width: 1200px; 
+
 }
 
 @media (max-width: 750px) {
