@@ -22,14 +22,23 @@
   color: white;
   font-family: sans-serif;
   font-size: clamp(16px, 1.2vw, 16px);
-}
-
-.forecast-card {
+    position: relative;
   cursor: pointer;
 }
 
+
 .forecast-card:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+.forecast-card.active::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  height: 60%;
+  width: 4px;
+  background: #ffcc00;
+  border-radius: 4px 4px 4px 4px;
 }
 
 .forecast-date {
