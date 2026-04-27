@@ -21,16 +21,15 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
   isCelsius,
   description,
   onClick,
-  isSelected
+  isSelected,
 }) => {
   return (
-    <button className={`forecast-card ${isSelected ? "active" : ""}`} onClick={onClick}>
+    <button
+      className={`forecast-card ${isSelected ? "active" : ""}`}
+      onClick={onClick}
+    >
       <div className="forecast-icon">
-        <img
-          
-          src={`https://openweathermap.org/img/wn/${icon}@2x.png`}
-          alt=""
-        />
+        <img src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt="" />
       </div>
       <div className="forecast-date">
         <div className="weekday">{weekday}</div>
@@ -38,7 +37,8 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
       </div>
       <div className="forecast-temp">
         {" "}
-        {Math.round(convertTemp(min, isCelsius))}°/{Math.round(convertTemp(max, isCelsius))}°
+        {Math.round(convertTemp(min, isCelsius))}°/
+        {Math.round(convertTemp(max, isCelsius))}°
       </div>
     </button>
   );

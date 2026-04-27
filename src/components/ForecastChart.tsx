@@ -24,38 +24,60 @@ ChartJS.register(
 type ForecastChartProps = {
   data: ForecastItem[];
   isCelsius: boolean;
-  timezone: number;
-  showCurrentPoint: boolean;
+  // timezone: number;
+  // showCurrentPoint: boolean;
+  selectedDay: string | null;
+  onSelectedDayChange: (day: string) => void;
 };
 
 export const ForecastChart = ({
   data,
   isCelsius,
-  timezone,
-  showCurrentPoint,
+  // timezone,
+  // showCurrentPoint,
+  selectedDay,
+  onSelectedDayChange,
 }: ForecastChartProps) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  // const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const isAutoScrolling = useRef(false);
 
+  useEffect(() => {
+    if (!selectedDay || !scrollRef.current) return;
 
-useEffect(() => {
-  const el = scrollRef.current;
-  if (!el) return;
+    const index = data.findIndex((item) => item.dt_txt.startsWith(selectedDay));
 
-  const onWheel = (e: WheelEvent) => {
-  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-    e.preventDefault();
-    el.scrollLeft += e.deltaY * 0.8;
-  }
-};
+    if (index >= 0) {
+      isAutoScrolling.current = true;
 
-  el.addEventListener("wheel", onWheel, { passive: false });
+      scrollRef.current.scrollTo({
+        left: index * pointWidth,
+        behavior: "smooth",
+      });
 
-  return () => el.removeEventListener("wheel", onWheel);
-}, []);
+      setTimeout(() => {
+        isAutoScrolling.current = false;
+      }, 400);
+    }
+  }, [selectedDay, data]);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
 
-  if (!data.length) return null;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY * 0.8;
+      }
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
+  if (!data?.length) return null;
   // const nowInCity = Date.now() + timezone * 1000;
   // const firstTimeInCity = data[0]?.dt * 1000 + timezone * 1000;
   // const step = 3 * 60 * 60 * 1000;
@@ -63,7 +85,6 @@ useEffect(() => {
   // const currentPosition = (nowInCity - firstTimeInCity) / step;
 
   const temps = data.map((item) => Math.round(item.main.temp));
-  console.log(temps);
   const times = data.map((item) => item.dt_txt.slice(11, 16));
 
   // const activeLabelPlugin = {
@@ -152,7 +173,7 @@ useEffect(() => {
       },
     },
     plugins: {
-      showCurrentPoint,
+      // showCurrentPoint,
       legend: {
         display: false,
       },
@@ -185,33 +206,44 @@ useEffect(() => {
       },
     },
   };
-const pointWidth = 150;
-const chartWidth = data.length * pointWidth;
+
+  // const activeIndex = data.findIndex((item) =>
+  //   item.dt_txt.startsWith(selectedDay ?? ""),
+  // );
+  const pointWidth = 150;
+  const chartWidth = data.length * pointWidth;
   const handleScroll = () => {
-  const el = scrollRef.current;
-  if (!el) return;
+    if (isAutoScrolling.current) return;
 
-  const index = Math.round(el.scrollLeft / pointWidth);
-  setActiveIndex(index);
-};
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const index = Math.round(el.scrollLeft / pointWidth);
+
+    const day = data[index]?.dt_txt.slice(0, 10);
+
+    if (day) {
+      onSelectedDayChange(day);
+    }
+  };
+
   return (
-  <>
-    <div className="chart-date">
-      {data[activeIndex] &&
-        new Date(data[activeIndex].dt * 1000).toLocaleDateString()}
-    </div>
-
-    <div className="chart-wrapper" ref={scrollRef} onScroll={handleScroll}>
-      <div className="chart-inner" style={{ width: chartWidth }}>
-        <Line
-          key={isCelsius ? "c" : "f"}
-          plugins={[labelsPlugin]}
-          options={options}
-          data={chartData}
-        />
+    <>
+      <div className="chart-date">
+        {selectedDay && new Date(selectedDay).toLocaleDateString()}
       </div>
-    </div>
-  </>
+
+      <div className="chart-wrapper" ref={scrollRef} onScroll={handleScroll}>
+        <div className="chart-inner" style={{ width: chartWidth }}>
+          <Line
+            key={isCelsius ? "c" : "f"}
+            plugins={[labelsPlugin]}
+            options={options}
+            data={chartData}
+          />
+        </div>
+      </div>
+    </>
   );
   {
     /* <Line plugins={[labelsPlugin, activeLabelPlugin]} options={options} data={chartData}/> */
