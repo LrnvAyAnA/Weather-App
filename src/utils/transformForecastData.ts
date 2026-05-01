@@ -43,9 +43,8 @@ export const transformForecastData = (forecastData: any): DailyForecast[] => {
   });
 
   return Object.entries(grouped).map(([date, data]) => {
-    const weekday = getWeekday(new Date(date).getTime() / 1000);
+    const weekday = getWeekday(new Date(date));
 
-    // берём самый частый или первый (упрощённо)
     const description = data.descriptions[0];
 
     return {
