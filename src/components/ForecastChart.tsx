@@ -84,57 +84,77 @@ const activeLabelPlugin = {
   afterDraw(chart: any) {
     const { ctx, scales: { x } } = chart;
 
-    // const label = x.getLabelForValue(currentIndex);
-    const xPos = x.getPixelForTick(currentIndex);
 
-  const yPos = chart.scales.x.bottom ;
 
     ctx.save();
 
     ctx.font = "12px sans-serif";
-    // const text = label;
-    // const textWidth = ctx.measureText(text).width;
 
-    const paddingX = 8;
-    const paddingY = 4;
 
     ctx.fillStyle = "rgba(68, 68, 68, 0.25)";
     ctx.beginPath();
-    // ctx.roundRect(
-    //   // xPos - textWidth / 2 - paddingX,
-    //   yPos - 10,
-    //   // textWidth + paddingX * 2,
-    //   20,
-    //   6
-    // );
+
     ctx.fill();
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
     ctx.textAlign = "center";
-    // ctx.fillText(text, xPos, yPos + 5);
 
     ctx.restore();
   }
 };
+
+const nowUtc = Date.now();
+
+const firstTime = data[0].dt * 1000;
+const lastTime = data[data.length - 1].dt * 1000;
+
+const isNowInRange =
+  nowUtc >= firstTime && nowUtc <= lastTime;
+
 const now = Date.now();
-const cityTimezone = timezone;
-const nowInCity = now + cityTimezone * 1000;
-const currentIndex = data.reduce((closestIndex, item, index) => {
-  const itemTime = item.dt * 1000;
+const nowInCity = nowUtc + timezone * 1000;
 
-  const closestTime =
-    data[closestIndex].dt * 1000;
+console.log("nowInCity:",nowInCity)
+console.log("firstTime:",firstTime)
+console.log("lastTime:",lastTime)
+console.log("isNowInRange:",isNowInRange)
 
-  return Math.abs(itemTime - nowInCity) <
-    Math.abs(closestTime - nowInCity)
-    ? index
-    : closestIndex;
-}, 0);
+const currentIndex = isNowInRange
+  ? data.reduce((closestIndex, item, index) => {
+      const itemTime = item.dt * 1000;
+      const closestTime = data[closestIndex].dt * 1000;
+
+      return Math.abs(itemTime - nowInCity) <
+        Math.abs(closestTime - nowInCity)
+        ? index
+        : closestIndex;
+    }, 0)
+  : null;
+
+
+// const now = Date.now();
+// const cityTimezone = timezone;
+// const nowInCity = now + cityTimezone * 1000;
+// const currentIndex = data.reduce((closestIndex, item, index) => {
+//   const itemTime = item.dt * 1000;
+
+//   const closestTime =
+//     data[closestIndex].dt * 1000;
+// console.log("nowInCity:",nowInCity)
+// console.log("itemTime:",itemTime)
+// console.log("closestTime:",closestTime)
+//   return Math.abs(itemTime - nowInCity) <
+//     Math.abs(closestTime - nowInCity)
+//     ? index
+//     : closestIndex;
+// }, 0);
+
+
 const pointColors = temps.map((_, i) =>
-  i === currentIndex ? "#ffcc00" : "#999"
+  currentIndex !== null && i === currentIndex ? "#ffcc00" : "#999"
 );
 
 const pointRadius = temps.map((_, i) =>
-  i === currentIndex ? 6 : 3
+  currentIndex !== null && i === currentIndex ? 6 : 3
 );
 
   const labelsPlugin = {

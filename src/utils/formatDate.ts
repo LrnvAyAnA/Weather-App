@@ -1,16 +1,13 @@
-export const getWeekday = (dt: number): string => {
-  const date = new Date(dt * 1000);
-
-  return date.toLocaleDateString("en-EN", {
+export const getWeekday = (date: Date): string => {
+  return date.toLocaleDateString("en-GB", {
     weekday: "long",
   });
 };
 
-export const getDayMonth = (dt: number): string => {
-  const date = new Date(dt * 1000);
-
+export const getDayMonth = (date: Date): string => {
   const day = date.getDate();
-  const month = date.toLocaleDateString("en-EN", {
+
+  const month = date.toLocaleDateString("en-GB", {
     month: "short",
   });
 
