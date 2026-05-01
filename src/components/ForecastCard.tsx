@@ -37,8 +37,9 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
       </div>
       <div className="forecast-temp">
         {" "}
-        {Math.round(convertTemp(min, isCelsius))}°/
-        {Math.round(convertTemp(max, isCelsius))}°
+        {Math.round(convertTemp(max, isCelsius))}°/ 
+        {Math.round(convertTemp(min, isCelsius))}°
+        
       </div>
     </button>
   );
