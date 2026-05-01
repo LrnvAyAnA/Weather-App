@@ -56,12 +56,6 @@ const WeatherCard: React.FC = () => {
     setDailyForecasts(transformForecastData(forecastData));
   }, [forecastData]);
 
-  const handleActiveIndexChange = (index: number) => {
-    const day = dailyForecasts[index]?.date;
-    if (!day) return;
-
-    setSelectedDay(day);
-  };
 
   const handleForecast = async (lat: number, lon: number) => {
     try {
@@ -81,7 +75,7 @@ const WeatherCard: React.FC = () => {
 
     try {
       setSelectedCityName(
-        `${selectedCity.displayName || selectedCity.name}, ${selectedCity.country}`,
+        `${selectedCity.displayName || selectedCity.name} • ${selectedCity.country}`,
       );
       const data = await fetchCurrentWeather(
         selectedCity.lat,
@@ -119,6 +113,29 @@ const WeatherCard: React.FC = () => {
     }
   };
 
+  const [now, setNow] = useState(Date.now());
+
+useEffect(() => {
+  const update = () => setNow(Date.now());
+console.log("now updated:", new Date(now).toLocaleTimeString());
+  const delay = 60000 - (Date.now() % 60000);
+
+  let interval: NodeJS.Timeout;
+
+  const timeout = setTimeout(() => {
+    update();
+    interval = setInterval(update, 60000);
+  }, delay);
+
+  return () => {
+    clearTimeout(timeout);
+    if (interval) clearInterval(interval);
+  };
+}, []);
+
+  const isTodaySelected =
+    selectedDay === new Date().toISOString().split("T")[0];
+    
   return (
     <div className="wrapper">
       <div className="header-bar">
@@ -138,6 +155,7 @@ const WeatherCard: React.FC = () => {
       {isLoading ? (
         <WeatherSkeleton />
       ) : (
+        
         weatherData && (
           <div className="grid">
             <div className="weather-main-info">
@@ -147,7 +165,11 @@ const WeatherCard: React.FC = () => {
                     <div className="cityName">
                       <div>{selectedCityName}</div>
                     </div>
-                    <div>{formatMainWeatherDate(weatherData.dt)}</div>
+                    <div>
+                      {formatMainWeatherDate(
+                        weatherData.dt, weatherData.timezone
+                      )}
+                    </div>
                   </div>
                   {isMobile && (
                     <GooeySwitch
@@ -197,6 +219,8 @@ const WeatherCard: React.FC = () => {
       <ForecastChart
         data={forecastData?.list ?? []}
         isCelsius={isCelsius}
+        timezone={forecastData?.city?.timezone ?? 0}
+        showCurrentPoint={isTodaySelected}
         selectedDay={selectedDay}
         onSelectedDayChange={setSelectedDay}
       />
