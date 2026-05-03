@@ -1,4 +1,4 @@
-import ForecastCard  from "./ForecastCard";
+import ForecastCard from "./ForecastCard";
 import "../styles/ForecastCard.css";
 import { DailyForecast } from "../utils/transformForecastData";
 import { useEffect, useRef } from "react";
@@ -14,9 +14,11 @@ const ForecastCardList: React.FC<ForecastCardListProps> = ({
   forecasts,
   isCelsius,
   onSelect,
-  selectedDay
+  selectedDay,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -38,7 +40,7 @@ const ForecastCardList: React.FC<ForecastCardListProps> = ({
         <ForecastCard
           key={f.date}
           weekday={f.weekday}
-          icon={f.icon}
+          iconType={f.main}
           min={f.min}
           max={f.max}
           description={f.description}

@@ -5,6 +5,7 @@ export interface DailyForecast {
   min: number;
   max: number;
   icon: string;
+   main: string; 
   weekday:string;
   description: string;
 }
@@ -18,6 +19,7 @@ export const transformForecastData = (forecastData: any): DailyForecast[] => {
       min: number;
       max: number;
       icon: string;
+       main: string; 
       descriptions: string[];
     }
   > = {};
@@ -33,6 +35,7 @@ export const transformForecastData = (forecastData: any): DailyForecast[] => {
         min: temp,
         max: temp,
         icon: item.weather[0].icon,
+        main: item.weather[0].main,
         descriptions: [description],
       };
     } else {
@@ -53,6 +56,7 @@ export const transformForecastData = (forecastData: any): DailyForecast[] => {
       min: Math.round(data.min),
       max: Math.round(data.max),
       icon: data.icon,
+      main: data.main,
       description,
     };
   });
