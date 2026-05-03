@@ -25,7 +25,7 @@ type ForecastChartProps = {
   data: ForecastItem[];
   isCelsius: boolean;
   showCurrentPoint: boolean;
-  timezone:number;
+  timezone: number;
   selectedDay: string | null;
   onSelectedDayChange: (day: string) => void;
 };
@@ -35,7 +35,7 @@ export const ForecastChart = ({
   isCelsius,
   showCurrentPoint,
   selectedDay,
-  timezone
+  timezone,
 }: ForecastChartProps) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const isAutoScrolling = useRef(false);
@@ -79,83 +79,55 @@ export const ForecastChart = ({
   const temps = data.map((item) => Math.round(item.main.temp));
   const times = data.map((item) => item.dt_txt.slice(11, 16));
 
-const activeLabelPlugin = {
-  id: "activeLabelPlugin",
-  afterDraw(chart: any) {
-    const { ctx, scales: { x } } = chart;
+  const activeLabelPlugin = {
+    id: "activeLabelPlugin",
+    afterDraw(chart: any) {
+      const {
+        ctx,
+        scales: { x },
+      } = chart;
 
+      ctx.save();
 
+      ctx.font = "12px sans-serif";
 
-    ctx.save();
+      ctx.fillStyle = "rgba(68, 68, 68, 0.25)";
+      ctx.beginPath();
 
-    ctx.font = "12px sans-serif";
+      ctx.fill();
+      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.textAlign = "center";
 
+      ctx.restore();
+    },
+  };
 
-    ctx.fillStyle = "rgba(68, 68, 68, 0.25)";
-    ctx.beginPath();
+  const firstTime = data[0].dt * 1000;
+  const lastTime = data[data.length - 1].dt * 1000;
 
-    ctx.fill();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.textAlign = "center";
+  const now = Date.now();
+  const cityTimezone = timezone;
+  const nowInCity = now + cityTimezone * 1000;
+  const isNowInRange = nowInCity >= firstTime && nowInCity <= lastTime;
+  const currentIndex = isNowInRange
+    ? data.reduce((closestIndex, item, index) => {
+        const itemTime = item.dt * 1000;
+        const closestTime = data[closestIndex].dt * 1000;
 
-    ctx.restore();
-  }
-};
+        return Math.abs(itemTime - nowInCity) <
+          Math.abs(closestTime - nowInCity)
+          ? index
+          : closestIndex;
+      }, 0)
+    : null;
 
-const nowUtc = Date.now();
+  const pointColors = temps.map((_, i) =>
+    currentIndex !== null && i === currentIndex ? "#ffcc00" : "#999",
+  );
 
-const firstTime = data[0].dt * 1000;
-const lastTime = data[data.length - 1].dt * 1000;
-
-const isNowInRange =
-  nowUtc >= firstTime && nowUtc <= lastTime;
-
-const now = Date.now();
-const nowInCity = nowUtc + timezone * 1000;
-
-console.log("nowInCity:",nowInCity)
-console.log("firstTime:",firstTime)
-console.log("lastTime:",lastTime)
-console.log("isNowInRange:",isNowInRange)
-
-const currentIndex = isNowInRange
-  ? data.reduce((closestIndex, item, index) => {
-      const itemTime = item.dt * 1000;
-      const closestTime = data[closestIndex].dt * 1000;
-
-      return Math.abs(itemTime - nowInCity) <
-        Math.abs(closestTime - nowInCity)
-        ? index
-        : closestIndex;
-    }, 0)
-  : null;
-
-
-// const now = Date.now();
-// const cityTimezone = timezone;
-// const nowInCity = now + cityTimezone * 1000;
-// const currentIndex = data.reduce((closestIndex, item, index) => {
-//   const itemTime = item.dt * 1000;
-
-//   const closestTime =
-//     data[closestIndex].dt * 1000;
-// console.log("nowInCity:",nowInCity)
-// console.log("itemTime:",itemTime)
-// console.log("closestTime:",closestTime)
-//   return Math.abs(itemTime - nowInCity) <
-//     Math.abs(closestTime - nowInCity)
-//     ? index
-//     : closestIndex;
-// }, 0);
-
-
-const pointColors = temps.map((_, i) =>
-  currentIndex !== null && i === currentIndex ? "#ffcc00" : "#999"
-);
-
-const pointRadius = temps.map((_, i) =>
-  currentIndex !== null && i === currentIndex ? 6 : 3
-);
+  const pointRadius = temps.map((_, i) =>
+    currentIndex !== null && i === currentIndex ? 6 : 3,
+  );
 
   const labelsPlugin = {
     id: "labelsPlugin",
@@ -189,7 +161,7 @@ const pointRadius = temps.map((_, i) =>
       {
         label: "Temp",
         data: temps,
-                pointRadius: pointRadius,
+        pointRadius: pointRadius,
         pointBackgroundColor: pointColors,
         borderColor: "rgba(255, 255, 255, 0.35)",
         pointHoverRadius: 8,
@@ -222,16 +194,16 @@ const pointRadius = temps.map((_, i) =>
         grid: {
           display: false,
         },
-//         ticks: {
-//   callback: function(value: any, index: number) {
-//     if (index === currentIndex) return "";
-//     return times[index];
-//   },
-// },
+        //         ticks: {
+        //   callback: function(value: any, index: number) {
+        //     if (index === currentIndex) return "";
+        //     return times[index];
+        //   },
+        // },
         offset: true,
         border: { display: false },
       },
-      
+
       y: {
         grid: { display: false },
         ticks: {

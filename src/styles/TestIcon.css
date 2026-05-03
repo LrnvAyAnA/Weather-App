@@ -1,0 +1,30 @@
+.test-grid {
+  display: grid;
+
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, 1fr);
+
+  gap: 16px;
+  padding: 20px;
+
+  overflow-x: auto;
+}
+
+.test-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+}
+
+.test-label {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.test-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+}

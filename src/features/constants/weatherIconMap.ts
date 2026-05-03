@@ -5,6 +5,8 @@ import snow from "../../assests/lottie/snow.json"
 import sun from "../../assests/lottie/sun.json"
 import thunderstorm from "../../assests/lottie/thunderstorm.json"
 import wind from "../../assests/lottie/wind.json"
+import atmosphere from "../../assests/lottie/wind.json"
+
 
 export const weatherIconMap: Record<string, any> = {
   Clear: sun,
@@ -13,7 +15,16 @@ export const weatherIconMap: Record<string, any> = {
   Snow: snow,
   Thunderstorm: thunderstorm,
   Drizzle: drizzle,
-  Wind: wind
+  Wind: wind,
+  Mist: atmosphere,
+  Smoke: atmosphere,
+  Haze: atmosphere,
+  Dust: atmosphere,
+  Fog: atmosphere,
+  Sand: atmosphere,
+	Tornado: atmosphere,
+	Squall: atmosphere,
+	Ash: atmosphere
 };
 
 // fallback

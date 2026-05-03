@@ -1,5 +1,6 @@
 .forecast-list {
   display: flex;
+  margin-top: 20px;
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -17,7 +18,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: clamp(200px, 15vw, 420px);
+  width: 250px;
   padding-inline: 12px;
   color: white;
   font-family: sans-serif;

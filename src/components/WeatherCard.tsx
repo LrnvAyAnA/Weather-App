@@ -22,6 +22,7 @@ import { ForecastChart } from "./ForecastChart";
 
 import { WeatherIcon } from "./WeatherIcon";
 import { formatMainWeatherDate } from "../features/weather/weatherFormat";
+import { TestIcon } from "./TestIcon";
 
 interface CityOption {
   name: string;
@@ -55,7 +56,6 @@ const WeatherCard: React.FC = () => {
     if (!forecastData) return;
     setDailyForecasts(transformForecastData(forecastData));
   }, [forecastData]);
-
 
   const handleForecast = async (lat: number, lon: number) => {
     try {
@@ -115,27 +115,27 @@ const WeatherCard: React.FC = () => {
 
   const [now, setNow] = useState(Date.now());
 
-useEffect(() => {
-  const update = () => setNow(Date.now());
-console.log("now updated:", new Date(now).toLocaleTimeString());
-  const delay = 60000 - (Date.now() % 60000);
+  useEffect(() => {
+    const update = () => setNow(Date.now());
+    console.log("now updated:", new Date(now).toLocaleTimeString());
+    const delay = 60000 - (Date.now() % 60000);
 
-  let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout;
 
-  const timeout = setTimeout(() => {
-    update();
-    interval = setInterval(update, 60000);
-  }, delay);
+    const timeout = setTimeout(() => {
+      update();
+      interval = setInterval(update, 60000);
+    }, delay);
 
-  return () => {
-    clearTimeout(timeout);
-    if (interval) clearInterval(interval);
-  };
-}, []);
+    return () => {
+      clearTimeout(timeout);
+      if (interval) clearInterval(interval);
+    };
+  }, []);
 
   const isTodaySelected =
     selectedDay === new Date().toISOString().split("T")[0];
-    
+
   return (
     <div className="wrapper">
       <div className="header-bar">
@@ -155,7 +155,6 @@ console.log("now updated:", new Date(now).toLocaleTimeString());
       {isLoading ? (
         <WeatherSkeleton />
       ) : (
-        
         weatherData && (
           <div className="grid">
             <div className="weather-main-info">
@@ -167,7 +166,8 @@ console.log("now updated:", new Date(now).toLocaleTimeString());
                     </div>
                     <div>
                       {formatMainWeatherDate(
-                        weatherData.dt, weatherData.timezone
+                        weatherData.dt,
+                        weatherData.timezone,
                       )}
                     </div>
                   </div>
@@ -201,7 +201,7 @@ console.log("now updated:", new Date(now).toLocaleTimeString());
                   </div>
                 </div>
               </div>
-
+              {/* <TestIcon /> */}
               <WeatherIcon type={weatherData.weather[0].main} size={300} />
 
               {dailyForecasts.length > 0 && (
