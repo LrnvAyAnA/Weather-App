@@ -5,26 +5,47 @@ import snow from "../../assests/lottie/snow.json"
 import sun from "../../assests/lottie/sun.json"
 import thunderstorm from "../../assests/lottie/thunderstorm.json"
 import wind from "../../assests/lottie/wind.json"
-import atmosphere from "../../assests/lottie/wind.json"
+import rainN from "../../assests/lottie/rainN.json"
+import moon from "../../assests/lottie/moon.json"
+import atmosphere from "../../assests/lottie/atmosphere.json"
 
 
 export const weatherIconMap: Record<string, any> = {
-  Clear: sun,
-  Clouds: clouds,
-  Rain: rain,
-  Snow: snow,
-  Thunderstorm: thunderstorm,
-  Drizzle: drizzle,
-  Wind: wind,
-  Mist: atmosphere,
-  Smoke: atmosphere,
-  Haze: atmosphere,
-  Dust: atmosphere,
-  Fog: atmosphere,
-  Sand: atmosphere,
-	Tornado: atmosphere,
-	Squall: atmosphere,
-	Ash: atmosphere
+  Clear: {
+    day: sun,
+    night: moon,
+  },
+  Rain: {
+    day: rain,
+    night: rainN,
+  },
+  Clouds: {
+    day: clouds,
+    night: clouds,
+  },
+  Snow: {
+    day: snow,
+    night: snow,
+  },
+  Thunderstorm: {
+    day: thunderstorm,
+    night: thunderstorm,
+  },
+  Drizzle: {
+    day: drizzle,
+    night: drizzle,
+  },
+
+  // атмосфера одинаковая
+  Mist: { day: atmosphere, night: atmosphere },
+  Smoke: { day: atmosphere, night: atmosphere },
+  Haze: { day: atmosphere, night: atmosphere },
+  Dust: { day: atmosphere, night: atmosphere },
+  Fog: { day: atmosphere, night: atmosphere },
+  Sand: { day: atmosphere, night: atmosphere },
+  Tornado: { day: atmosphere, night: atmosphere },
+  Squall: { day: atmosphere, night: atmosphere },
+  Ash: { day: atmosphere, night: atmosphere },
 };
 
 // fallback

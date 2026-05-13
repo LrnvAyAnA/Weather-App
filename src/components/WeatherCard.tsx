@@ -57,6 +57,12 @@ const WeatherCard: React.FC = () => {
     setDailyForecasts(transformForecastData(forecastData));
   }, [forecastData]);
 
+  useEffect(() => {
+    if (dailyForecasts.length > 0) {
+      setSelectedDay(dailyForecasts[0].date);
+    }
+  }, [dailyForecasts]);
+
   const handleForecast = async (lat: number, lon: number) => {
     try {
       const data = await fetchWeatherForecast(lat, lon);
@@ -67,6 +73,16 @@ const WeatherCard: React.FC = () => {
     }
   };
 
+  const formatCityName = (city: CityOption) => {
+    const base = city.displayName || city.name;
+
+    if (base.endsWith(city.country)) {
+      return base;
+    }
+
+    return `${base} • ${city.country}`;
+  };
+
   const handleSearch = async (selectedCity: CityOption) => {
     setError(null);
     setWeatherData(null);
@@ -74,9 +90,7 @@ const WeatherCard: React.FC = () => {
     setIsLoading(true);
 
     try {
-      setSelectedCityName(
-        `${selectedCity.displayName || selectedCity.name} • ${selectedCity.country}`,
-      );
+      setSelectedCityName(formatCityName(selectedCity));
       const data = await fetchCurrentWeather(
         selectedCity.lat,
         selectedCity.lon,
@@ -104,7 +118,13 @@ const WeatherCard: React.FC = () => {
       await handleForecast(lat, lon);
       const city = await getCityByCoords(lat, lon);
       if (city) {
-        setSelectedCityName(`${city.displayName}, ${city.country}`);
+        const base = city.displayName || city.name;
+
+        if (base.endsWith(city.country)) {
+          setSelectedCityName(base);
+        } else {
+          setSelectedCityName(`${base}• ${city.country}`);
+        }
       }
     } catch (err) {
       setError("Не удалось определить местоположение");
@@ -202,7 +222,11 @@ const WeatherCard: React.FC = () => {
                 </div>
               </div>
               {/* <TestIcon /> */}
-              <WeatherIcon type={weatherData.weather[0].main} size={300} />
+              <WeatherIcon
+                type={weatherData.weather[0].main}
+                size={300}
+                iconCode={weatherData.weather[0].icon}
+              />
 
               {dailyForecasts.length > 0 && (
                 <ForecastCardList
