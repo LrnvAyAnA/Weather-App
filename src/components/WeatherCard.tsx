@@ -237,17 +237,17 @@ const WeatherCard: React.FC = () => {
                 />
               )}
             </div>
+            <ForecastChart
+              data={forecastData?.list ?? []}
+              isCelsius={isCelsius}
+              timezone={forecastData?.city?.timezone ?? 0}
+              showCurrentPoint={isTodaySelected}
+              selectedDay={selectedDay}
+              onSelectedDayChange={setSelectedDay}
+            />
           </div>
         )
       )}
-      <ForecastChart
-        data={forecastData?.list ?? []}
-        isCelsius={isCelsius}
-        timezone={forecastData?.city?.timezone ?? 0}
-        showCurrentPoint={isTodaySelected}
-        selectedDay={selectedDay}
-        onSelectedDayChange={setSelectedDay}
-      />
     </div>
   );
 };

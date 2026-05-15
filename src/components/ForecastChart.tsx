@@ -11,7 +11,7 @@ import {
 import { ForecastItem } from "../types/weather";
 import { Line } from "react-chartjs-2";
 import { convertTemp } from "../utils/convertTemp";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -69,8 +69,6 @@ export const ForecastChart = ({
       }
     };
 
-    el.addEventListener("wheel", onWheel, { passive: false });
-
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
@@ -82,10 +80,7 @@ export const ForecastChart = ({
   const activeLabelPlugin = {
     id: "activeLabelPlugin",
     afterDraw(chart: any) {
-      const {
-        ctx,
-        scales: { x },
-      } = chart;
+      const { ctx } = chart;
 
       ctx.save();
 
