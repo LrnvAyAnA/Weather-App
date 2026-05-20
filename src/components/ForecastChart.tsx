@@ -11,7 +11,7 @@ import {
 import { ForecastItem } from "../types/weather";
 import { Line } from "react-chartjs-2";
 import { convertTemp } from "../utils/convertTemp";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -39,7 +39,23 @@ export const ForecastChart = ({
 }: ForecastChartProps) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const isAutoScrolling = useRef(false);
+const [containerWidth, setContainerWidth] = useState(800);
 
+
+
+
+useEffect(() => {
+  const el = scrollRef.current;
+  if (!el) return;
+
+  const observer = new ResizeObserver((entries) => {
+    const width = entries[0].contentRect.width;
+    setContainerWidth(width);
+  });
+
+  observer.observe(el);
+  return () => observer.disconnect();
+}, []);
   useEffect(() => {
     if (!selectedDay || !scrollRef.current) return;
 
@@ -209,8 +225,10 @@ export const ForecastChart = ({
     },
   };
 
-  const pointWidth = (scrollRef.current?.clientWidth ?? 0) / 8;
-  const chartWidth = data.length * pointWidth;
+
+
+const pointWidth = containerWidth / 8;
+const chartWidth = data.length * pointWidth;
   return (
     <>
       <div className="chart-date">

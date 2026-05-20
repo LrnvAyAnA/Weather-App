@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 
 interface Props {
   type: string;
-  iconCode?: string; // ← ДОБАВИЛИ
+  iconCode?: string;
   size?: number;
   mode?: "always" | "interactive";
   isActive?: boolean;
@@ -22,10 +22,10 @@ export const WeatherIcon = ({
 }: Props) => {
   const lottieRef = useRef<any>(null);
 
-  // ✔️ определяем день/ночь
+
   const isNight = iconCode?.endsWith("n");
 
-  // ✔️ берём вариант
+
   const variant = weatherIconMap[type];
 
   const animation =
@@ -47,7 +47,7 @@ export const WeatherIcon = ({
   }, [isActive, mode, animation]); 
 
   return (
-    <div style={{ width: size, height: size }}>
+    <div style={{ width: size, height: size }} className="main-icon">
       <Lottie
         lottieRef={lottieRef}
         animationData={animation}

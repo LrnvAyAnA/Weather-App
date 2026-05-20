@@ -82,3 +82,9 @@
 .toggle-input:checked + .toggle .toggle-circle.right {
   transform: scale(1);
 }
+
+@media (max-width: 580px) {
+  .gooey-toggle {
+  margin: 0;
+  }
+}

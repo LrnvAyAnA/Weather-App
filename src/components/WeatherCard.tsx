@@ -179,54 +179,57 @@ const WeatherCard: React.FC = () => {
           <div className="grid">
             <div className="weather-main-info">
               <div className="weather-temp-info">
-                <div className="city-date-info">
-                  <div>
-                    <div className="cityName">
-                      <div>{selectedCityName}</div>
-                    </div>
+                <div>
+                  <div className="city-date-info">
+                    {isMobile && (
+                      <GooeySwitch
+                        isCelsius={isCelsius}
+                        onToggle={() => setIsCelsius(!isCelsius)}
+                      />
+                    )}
                     <div>
-                      {formatMainWeatherDate(
-                        weatherData.dt,
-                        weatherData.timezone,
-                      )}
+                      <div className="cityName">
+                        <div>{selectedCityName}</div>
+                      </div>
+                      <div>
+                        {formatMainWeatherDate(
+                          weatherData.dt,
+                          weatherData.timezone,
+                        )}
+                      </div>
+                    </div>                    
+                  </div>
+                  <div className="weather-temp">
+                    {Math.round(convertTemp(weatherData.main.temp, isCelsius))}
+                    {isCelsius ? "°C" : "°F"}
+                  </div>
+                  <div className="weather-description">
+                    {weatherData?.weather?.[0]?.description || ""}
+                  </div>
+                  <div className="right-side">
+                    <div className="humidity">
+                      <Humidity />
+                      <div>
+                        Humidity <br /> {weatherData.main.humidity}%
+                      </div>
+                    </div>
+                    <div className="wind">
+                      <Wind />
+                      <div>
+                        Wind speed
+                        <br /> {weatherData.wind.speed}m/s
+                      </div>
                     </div>
                   </div>
-                  {isMobile && (
-                    <GooeySwitch
-                      isCelsius={isCelsius}
-                      onToggle={() => setIsCelsius(!isCelsius)}
-                    />
-                  )}
                 </div>
-                <div className="weather-temp">
-                  {Math.round(convertTemp(weatherData.main.temp, isCelsius))}
-                  {isCelsius ? "°C" : "°F"}
-                </div>
-                <div className="weather-description">
-                  {weatherData?.weather?.[0]?.description || ""}
-                </div>
-                <div className="right-side">
-                  <div className="humidity">
-                    <Humidity />
-                    <div>
-                      Humidity <br /> {weatherData.main.humidity}%
-                    </div>
+                <div className="weather-icon-wrapper">
+                  <WeatherIcon
+                  type={weatherData.weather[0].main}
+                  size={200}
+                  iconCode={weatherData.weather[0].icon}
+                />
                   </div>
-                  <div className="wind">
-                    <Wind />
-                    <div>
-                      Wind speed
-                      <br /> {weatherData.wind.speed}m/s
-                    </div>
-                  </div>
-                </div>
               </div>
-              {/* <TestIcon /> */}
-              <WeatherIcon
-                type={weatherData.weather[0].main}
-                size={300}
-                iconCode={weatherData.weather[0].icon}
-              />
 
               {dailyForecasts.length > 0 && (
                 <ForecastCardList

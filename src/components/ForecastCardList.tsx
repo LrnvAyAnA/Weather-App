@@ -1,7 +1,7 @@
 import ForecastCard from "./ForecastCard";
 import "../styles/ForecastCard.css";
 import { DailyForecast } from "../utils/transformForecastData";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ForecastCardListProps {
   forecasts: DailyForecast[];
@@ -17,25 +17,31 @@ const ForecastCardList: React.FC<ForecastCardListProps> = ({
   selectedDay,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isCompact, setIsCompact] = useState(window.innerWidth < 1100);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const handleResize = () => setIsCompact(window.innerWidth < 1100);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-
     const handleWheel = (e: WheelEvent) => {
       if (e.deltaY === 0) return;
       e.preventDefault();
       el.scrollLeft += e.deltaY;
     };
-
     el.addEventListener("wheel", handleWheel, { passive: false });
     return () => el.removeEventListener("wheel", handleWheel);
   }, []);
 
   return (
-    <div className="forecast-list" ref={containerRef}>
+    <div
+      className={`forecast-list ${isCompact ? "forecast-list--compact" : ""}`}
+      ref={containerRef}
+    >
       {forecasts.map((f) => (
         <ForecastCard
           key={f.date}
@@ -47,6 +53,7 @@ const ForecastCardList: React.FC<ForecastCardListProps> = ({
           isSelected={selectedDay === f.date}
           isCelsius={isCelsius}
           onClick={() => onSelect(f.date)}
+          compact={isCompact}
         />
       ))}
     </div>

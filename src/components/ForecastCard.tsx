@@ -14,7 +14,7 @@ interface ForecastCardProps {
   isSelected: boolean;
 }
 
-const ForecastCard: React.FC<ForecastCardProps> = ({
+const ForecastCard: React.FC<ForecastCardProps & { compact?: boolean }> = ({
   weekday,
   iconType,
   min,
@@ -23,9 +23,22 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
   description,
   onClick,
   isSelected,
+  compact = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const isActive = isSelected || isHovered;
+
+  if (compact) {
+    return (
+      <button
+        className={`forecast-card-tab ${isSelected ? "active" : ""}`}
+        onClick={onClick}
+      >
+        {weekday}
+      </button>
+    );
+  }
+
   return (
     <button
       className={`forecast-card ${isSelected ? "active" : ""}`}
@@ -34,19 +47,13 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="forecast-icon">
-        <WeatherIcon
-          type={iconType}
-          size={60}
-          mode="interactive"
-          isActive={isActive}
-        />
+        <WeatherIcon type={iconType} size={50} mode="interactive" isActive={isActive} />
       </div>
       <div className="forecast-date">
         <div className="weekday">{weekday}</div>
         <div className="description">{description}</div>
       </div>
       <div className="forecast-temp">
-        {" "}
         {Math.round(convertTemp(max, isCelsius))}°/
         {Math.round(convertTemp(min, isCelsius))}°
       </div>
