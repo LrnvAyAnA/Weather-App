@@ -23,6 +23,7 @@ import { ForecastChart } from "./ForecastChart";
 import { WeatherIcon } from "./WeatherIcon";
 import { formatMainWeatherDate } from "../features/weather/weatherFormat";
 import { TestIcon } from "./TestIcon";
+import { WeatherSpinner } from "./WeatherSpinner";
 
 interface CityOption {
   name: string;
@@ -43,6 +44,16 @@ const WeatherCard: React.FC = () => {
   const [selectedDay, setSelectedDay] = useState<string | null>(
     new Date().toISOString().slice(0, 10),
   );
+
+useEffect(() => {
+  handleSearch({
+    name: "Moscow",
+    displayName: "Moscow",
+    country: "RU",
+    lat: 55.7558,
+    lon: 37.6173,
+  });
+}, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 580);
@@ -134,7 +145,30 @@ const WeatherCard: React.FC = () => {
   };
 
   const [now, setNow] = useState(Date.now());
+function useIconSize() {
+  const getSize = () => {
+    const w = window.innerWidth;
 
+    if (w < 480) return 120;
+    if (w < 781) return 180;
+    return 300;
+  };
+
+  const [size, setSize] = useState(getSize);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSize(getSize());
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return size;
+}
+const size = useIconSize();
   useEffect(() => {
     const update = () => setNow(Date.now());
     console.log("now updated:", new Date(now).toLocaleTimeString());
@@ -173,7 +207,7 @@ const WeatherCard: React.FC = () => {
       </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {isLoading ? (
-        <WeatherSkeleton />
+        <WeatherSpinner />
       ) : (
         weatherData && (
           <div className="grid">
@@ -225,12 +259,11 @@ const WeatherCard: React.FC = () => {
                 <div className="weather-icon-wrapper">
                   <WeatherIcon
                   type={weatherData.weather[0].main}
-                  size={200}
+                  size={size}
                   iconCode={weatherData.weather[0].icon}
                 />
                   </div>
               </div>
-
               {dailyForecasts.length > 0 && (
                 <ForecastCardList
                   forecasts={dailyForecasts.slice(0)}

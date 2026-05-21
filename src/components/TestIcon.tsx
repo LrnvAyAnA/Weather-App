@@ -10,12 +10,15 @@ export const TestIcon = () => {
 
   return (
     <div className="test-grid">
-      {entries.map(([key, animation]) => (
+      {entries.map(([key, variants]) => (
         <div key={key} className="test-item">
-          <div className="test-label">{key}</div>
-
+          <div className="test-label">{key} (day)</div>
           <div className="test-icon">
-            <Lottie animationData={animation} loop autoplay />
+            <Lottie animationData={variants.day} loop autoplay />
+          </div>
+          <div className="test-label">{key} (night)</div>
+          <div className="test-icon">
+            <Lottie animationData={variants.night} loop autoplay />
           </div>
         </div>
       ))}

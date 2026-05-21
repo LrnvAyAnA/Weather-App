@@ -13,8 +13,8 @@ body {
 .wrapper {
   overflow: hidden;
   width: clamp(400px, 90vw, 1200px);
-  max-height: 95vh;
-  /* height: 90vh; */
+  max-height: 96vh;
+  height: 92vh;
   background-color: rgba(0, 0, 0, 0.39);
   border-radius: 25px;
   backdrop-filter: blur(3px);
@@ -40,9 +40,7 @@ body {
 
 .grid {
   padding-top: 40px;
-
   min-height: 0;
-
   overflow-y: auto;
   overflow-x: hidden;
 
@@ -264,6 +262,8 @@ body {
   flex-shrink: 0;
 }
 
+
+
 @media (max-width: 580px) {
   .grid {
     margin: 0px;
@@ -294,7 +294,7 @@ body {
   .wrapper {
     padding-top: 15px;
     overflow: hidden;
-    height: 90vh;
+    height: 80vh;
     margin-inline: 10px;
     padding-inline: 0;
   }
@@ -322,14 +322,25 @@ body {
   }
 }
 
-@media (max-width: 780px) and (min-width: 580px) {
+@media (max-width: 780px) and (min-width: 581px) {
   .wrapper {
     padding-inline: 0;
-  }
-
+  display: flex;
+  flex-direction: column;
+  height: 92vh;
+}
+.grid {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
   .header-bar {
     padding-inline: 50px;
   }
+  .weather-main-info {
+  flex: 1;
+}
 }
 
 @media (max-width: 1100px) {

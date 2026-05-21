@@ -47,7 +47,7 @@ const ForecastCard: React.FC<ForecastCardProps & { compact?: boolean }> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="forecast-icon">
-        <WeatherIcon type={iconType} size={50} mode="interactive" isActive={isActive} />
+        <WeatherIcon type={iconType} size={40} mode="interactive" isActive={isActive} />
       </div>
       <div className="forecast-date">
         <div className="weekday">{weekday}</div>
