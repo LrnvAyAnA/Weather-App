@@ -36,7 +36,6 @@ export const weatherIconMap: Record<string, any> = {
     night: drizzle,
   },
 
-  // атмосфера одинаковая
   Mist: { day: atmosphere, night: atmosphere },
   Smoke: { day: atmosphere, night: atmosphere },
   Haze: { day: atmosphere, night: atmosphere },

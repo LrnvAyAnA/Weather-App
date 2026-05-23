@@ -43,7 +43,6 @@ const [containerWidth, setContainerWidth] = useState(800);
 
 
 
-
 useEffect(() => {
   const el = scrollRef.current;
   if (!el) return;
@@ -205,12 +204,6 @@ useEffect(() => {
         grid: {
           display: false,
         },
-        //         ticks: {
-        //   callback: function(value: any, index: number) {
-        //     if (index === currentIndex) return "";
-        //     return times[index];
-        //   },
-        // },
         offset: true,
         border: { display: false },
       },

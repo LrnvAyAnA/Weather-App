@@ -4,7 +4,6 @@
   align-items: center;
   height: 100vh;
   background-color: rgb(33, 34, 34);
-  /* background-image: url('../public/task_01k8tk9q3sf94as0vk6an7cx5q_1761829356_img_1.webp'); */
   background-size: cover;
   background-position: center;
 }
@@ -20,5 +19,3 @@ button:active {
   outline: none;
   box-shadow: none;
 }
-
-/* url('../public/background.jpg') */
