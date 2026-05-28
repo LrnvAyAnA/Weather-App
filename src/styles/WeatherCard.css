@@ -88,30 +88,6 @@ body {
   font-size: clamp(25px, 3vw, 27px);
 }
 
-.weather-main {
-  text-align: end;
-  font-size: clamp(25px, 5vw, 45px);
-}
-
-.weather-icon img {
-  width: clamp(130px, 10vw, 150px);
-  height: clamp(130px, 10vw, 150px);
-}
-
-.description {
-  font-size: clamp(18px, 2vw, 25px);
-}
-
-.unit-toggle button {
-  width: 71px;
-  height: 28px;
-  border-radius: 15px;
-  background-color: rgba(183, 183, 183, 0.33);
-  border: none;
-  outline: none;
-  box-shadow: none;
-}
-
 .right-side {
   margin-top: 20px;
   display: flex;

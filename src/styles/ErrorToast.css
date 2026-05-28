@@ -1,0 +1,9 @@
+.error-toast {
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  color: #ff6b6b;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-top: 20px
+}

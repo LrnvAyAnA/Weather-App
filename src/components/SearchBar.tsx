@@ -27,7 +27,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch,onLocationSearch,setIsLo
   useEffect(() => {
   const timeout = setTimeout(() => {
     if (city.trim().length > 1) {
-      getCitySuggestions(city).then(setSuggestions).catch(console.error);
+       getCitySuggestions(city)
+        .then((results) => {
+          setSuggestions(results);
+          setIsVisible(results.length > 0);
+        })
+        .catch(() => {
+          setSuggestions([]);
+          setIsVisible(false);
+        });
     } else {
       setSuggestions([]);
     }
@@ -66,15 +74,6 @@ const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSuggestions([]);
     setIsVisible(false);
     return;
-  }
-
-  try {
-    const results = await getCitySuggestions(value);
-    setSuggestions(results);
-    setIsVisible(results.length > 0);
-  } catch {
-    setSuggestions([]);
-    setIsVisible(false);
   }
 };
 
@@ -120,7 +119,7 @@ const handleSelect = (city: CityOption) => {
     className={`suggestions ${isVisible ? "show" : ""}`}
   >
     {suggestions.map((option, i) => (
-      <li key={i} onClick={() => handleSelect(option)}>
+      <li key={`${option.lat}-${option.lon}`} onClick={() => handleSelect(option)}>
         {option.name}, {option.country}
       </li>
     ))}

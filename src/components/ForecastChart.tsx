@@ -11,7 +11,7 @@ import {
 import { ForecastItem } from "../types/weather";
 import { Line } from "react-chartjs-2";
 import { convertTemp } from "../utils/convertTemp";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,7 +27,6 @@ type ForecastChartProps = {
   showCurrentPoint: boolean;
   timezone: number;
   selectedDay: string | null;
-  onSelectedDayChange: (day: string) => void;
 };
 
 export const ForecastChart = ({
@@ -39,22 +38,23 @@ export const ForecastChart = ({
 }: ForecastChartProps) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const isAutoScrolling = useRef(false);
-const [containerWidth, setContainerWidth] = useState(800);
+  const [containerWidth, setContainerWidth] = useState(800);
+  const pointWidth = containerWidth / 8;
+  const chartWidth = data.length * pointWidth;
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
 
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0].contentRect.width;
+      setContainerWidth(width);
+    });
 
-useEffect(() => {
-  const el = scrollRef.current;
-  if (!el) return;
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
-  const observer = new ResizeObserver((entries) => {
-    const width = entries[0].contentRect.width;
-    setContainerWidth(width);
-  });
-
-  observer.observe(el);
-  return () => observer.disconnect();
-}, []);
   useEffect(() => {
     if (!selectedDay || !scrollRef.current) return;
 
@@ -71,53 +71,47 @@ useEffect(() => {
         isAutoScrolling.current = false;
       }, 400);
     }
-  }, [selectedDay, data]);
+  }, [selectedDay, data, pointWidth]);
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+  const labelsPlugin = useMemo(
+    () => ({
+      id: "labelsPlugin",
+      afterDatasetsDraw(chart: any) {
+        const { ctx } = chart;
 
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault();
-        el.scrollLeft += e.deltaY * 0.8;
-      }
-    };
+        chart.data.datasets.forEach((dataset: any, i: number) => {
+          const meta = chart.getDatasetMeta(i);
 
-    return () => el.removeEventListener("wheel", onWheel);
-  }, []);
+          meta.data.forEach((point: any, index: number) => {
+            ctx.save();
+            ctx.font = "16px sans-serif";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+            ctx.textAlign = "center";
+
+            ctx.fillText(
+              `${Math.round(convertTemp(dataset.data[index], isCelsius))}°`,
+              point.x,
+              point.y - 15,
+            );
+
+            ctx.restore();
+          });
+        });
+      },
+    }),
+    [isCelsius],
+  );
 
   if (!data?.length) return null;
 
   const temps = data.map((item) => Math.round(item.main.temp));
   const times = data.map((item) => item.dt_txt.slice(11, 16));
 
-  const activeLabelPlugin = {
-    id: "activeLabelPlugin",
-    afterDraw(chart: any) {
-      const { ctx } = chart;
-
-      ctx.save();
-
-      ctx.font = "12px sans-serif";
-
-      ctx.fillStyle = "rgba(68, 68, 68, 0.25)";
-      ctx.beginPath();
-
-      ctx.fill();
-      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-      ctx.textAlign = "center";
-
-      ctx.restore();
-    },
-  };
-
   const firstTime = data[0].dt * 1000;
   const lastTime = data[data.length - 1].dt * 1000;
 
   const now = Date.now();
-  const cityTimezone = timezone;
-  const nowInCity = now + cityTimezone * 1000;
+  const nowInCity = now + timezone * 1000;
   const isNowInRange = nowInCity >= firstTime && nowInCity <= lastTime;
   const currentIndex = isNowInRange
     ? data.reduce((closestIndex, item, index) => {
@@ -138,32 +132,6 @@ useEffect(() => {
   const pointRadius = temps.map((_, i) =>
     currentIndex !== null && i === currentIndex ? 6 : 3,
   );
-
-  const labelsPlugin = {
-    id: "labelsPlugin",
-    afterDatasetsDraw(chart: any) {
-      const { ctx } = chart;
-
-      chart.data.datasets.forEach((dataset: any, i: number) => {
-        const meta = chart.getDatasetMeta(i);
-
-        meta.data.forEach((point: any, index: number) => {
-          ctx.save();
-          ctx.font = "16px sans-serif";
-          ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-          ctx.textAlign = "center";
-
-          ctx.fillText(
-            `${Math.round(convertTemp(dataset.data[index], isCelsius))}°`,
-            point.x,
-            point.y - 15,
-          );
-
-          ctx.restore();
-        });
-      });
-    },
-  };
 
   const chartData = {
     labels: times,
@@ -218,10 +186,6 @@ useEffect(() => {
     },
   };
 
-
-
-const pointWidth = containerWidth / 8;
-const chartWidth = data.length * pointWidth;
   return (
     <>
       <div className="chart-date">
@@ -232,7 +196,7 @@ const chartWidth = data.length * pointWidth;
         <div className="chart-inner" style={{ width: chartWidth }}>
           <Line
             key={isCelsius ? "c" : "f"}
-            plugins={[labelsPlugin, activeLabelPlugin]}
+            plugins={[labelsPlugin]}
             options={options}
             data={chartData}
           />

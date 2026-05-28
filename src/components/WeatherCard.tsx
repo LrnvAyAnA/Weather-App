@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../styles/WeatherCard.css";
 import SearchBar from "./SearchBar";
 
@@ -17,13 +17,13 @@ import { GooeySwitch } from "./GooeySwitch";
 import ForecastCardList from "./ForecastCardList";
 import { convertTemp } from "../utils/convertTemp";
 import { getUserLocation } from "../utils/getUserLocation";
-import { WeatherSkeleton } from "./WeatherSkeleton";
 import { ForecastChart } from "./ForecastChart";
 
 import { WeatherIcon } from "./WeatherIcon";
 import { formatMainWeatherDate } from "../features/weather/weatherFormat";
-import { TestIcon } from "./TestIcon";
 import { WeatherSpinner } from "./WeatherSpinner";
+import { useViewport } from "../useViewPort";
+import { ErrorToast } from "./ErrorToast";
 
 interface CityOption {
   name: string;
@@ -40,61 +40,15 @@ const WeatherCard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCelsius, setIsCelsius] = useState(true);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 580);
   const [selectedDay, setSelectedDay] = useState<string | null>(
     new Date().toISOString().slice(0, 10),
   );
 
-useEffect(() => {
-  handleSearch({
-    name: "Moscow",
-    displayName: "Moscow",
-    country: "RU",
-    lat: 55.7558,
-    lon: 37.6173,
-  });
-}, []);
+  const { width } = useViewport();
+  const isMobile = width <= 580;
+  const iconSize = width < 480 ? 120 : width < 781 ? 180 : 300;
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 580);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const [dailyForecasts, setDailyForecasts] = useState<DailyForecast[]>([]);
-  const [forecastData, setForecastData] = useState<any>(null);
-  useEffect(() => {
-    if (!forecastData) return;
-    setDailyForecasts(transformForecastData(forecastData));
-  }, [forecastData]);
-
-  useEffect(() => {
-    if (dailyForecasts.length > 0) {
-      setSelectedDay(dailyForecasts[0].date);
-    }
-  }, [dailyForecasts]);
-
-  const handleForecast = async (lat: number, lon: number) => {
-    try {
-      const data = await fetchWeatherForecast(lat, lon);
-      setForecastData(data);
-      console.log("это дата", data);
-    } catch (err) {
-      console.error("Не удалось получить прогноз", err);
-    }
-  };
-
-  const formatCityName = (city: CityOption) => {
-    const base = city.displayName || city.name;
-
-    if (base.endsWith(city.country)) {
-      return base;
-    }
-
-    return `${base} • ${city.country}`;
-  };
-
-  const handleSearch = async (selectedCity: CityOption) => {
+  const handleSearch = useCallback(async (selectedCity: CityOption) => {
     setError(null);
     setWeatherData(null);
     setForecastData(null);
@@ -114,7 +68,8 @@ useEffect(() => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
   const handleDetectLocation = async () => {
     setError(null);
     setWeatherData(null);
@@ -144,48 +99,48 @@ useEffect(() => {
     }
   };
 
-  const [now, setNow] = useState(Date.now());
-function useIconSize() {
-  const getSize = () => {
-    const w = window.innerWidth;
+  useEffect(() => {
+    handleSearch({
+      name: "Moscow",
+      displayName: "Moscow",
+      country: "RU",
+      lat: 55.7558,
+      lon: 37.6173,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    if (w < 480) return 120;
-    if (w < 781) return 180;
-    return 300;
+  const [dailyForecasts, setDailyForecasts] = useState<DailyForecast[]>([]);
+  const [forecastData, setForecastData] = useState<any>(null);
+  useEffect(() => {
+    if (!forecastData) return;
+    setDailyForecasts(transformForecastData(forecastData));
+  }, [forecastData]);
+
+  useEffect(() => {
+    if (dailyForecasts.length > 0) {
+      setSelectedDay(dailyForecasts[0].date);
+    }
+  }, [dailyForecasts]);
+
+  const handleForecast = async (lat: number, lon: number) => {
+    try {
+      const data = await fetchWeatherForecast(lat, lon);
+      setForecastData(data);
+    } catch (err) {
+      console.error("Не удалось получить прогноз", err);
+    }
   };
 
-  const [size, setSize] = useState(getSize);
+  const formatCityName = (city: CityOption) => {
+    const base = city.displayName || city.name;
 
-  useEffect(() => {
-    const handleResize = () => {
-      setSize(getSize());
-    };
+    if (base.endsWith(city.country)) {
+      return base;
+    }
 
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return size;
-}
-const size = useIconSize();
-  useEffect(() => {
-    const update = () => setNow(Date.now());
-    console.log("now updated:", new Date(now).toLocaleTimeString());
-    const delay = 60000 - (Date.now() % 60000);
-
-    let interval: NodeJS.Timeout;
-
-    const timeout = setTimeout(() => {
-      update();
-      interval = setInterval(update, 60000);
-    }, delay);
-
-    return () => {
-      clearTimeout(timeout);
-      if (interval) clearInterval(interval);
-    };
-  }, []);
+    return `${base} • ${city.country}`;
+  };
 
   const isTodaySelected =
     selectedDay === new Date().toISOString().split("T")[0];
@@ -205,7 +160,7 @@ const size = useIconSize();
           />
         )}
       </div>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <ErrorToast message={error}  duration={4000}/>}
       {isLoading ? (
         <WeatherSpinner />
       ) : (
@@ -231,7 +186,7 @@ const size = useIconSize();
                           weatherData.timezone,
                         )}
                       </div>
-                    </div>                    
+                    </div>
                   </div>
                   <div className="weather-temp">
                     {Math.round(convertTemp(weatherData.main.temp, isCelsius))}
@@ -258,11 +213,11 @@ const size = useIconSize();
                 </div>
                 <div className="weather-icon-wrapper">
                   <WeatherIcon
-                  type={weatherData.weather[0].main}
-                  size={size}
-                  iconCode={weatherData.weather[0].icon}
-                />
-                  </div>
+                    type={weatherData.weather[0].main}
+                    size={iconSize}
+                    iconCode={weatherData.weather[0].icon}
+                  />
+                </div>
               </div>
               {dailyForecasts.length > 0 && (
                 <ForecastCardList
@@ -279,7 +234,6 @@ const size = useIconSize();
               timezone={forecastData?.city?.timezone ?? 0}
               showCurrentPoint={isTodaySelected}
               selectedDay={selectedDay}
-              onSelectedDayChange={setSelectedDay}
             />
           </div>
         )

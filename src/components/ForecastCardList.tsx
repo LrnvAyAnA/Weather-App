@@ -1,7 +1,8 @@
 import ForecastCard from "./ForecastCard";
 import "../styles/ForecastCard.css";
 import { DailyForecast } from "../utils/transformForecastData";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useViewport } from "../useViewPort";
 
 interface ForecastCardListProps {
   forecasts: DailyForecast[];
@@ -17,13 +18,8 @@ const ForecastCardList: React.FC<ForecastCardListProps> = ({
   selectedDay,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isCompact, setIsCompact] = useState(window.innerWidth < 1100);
-
-  useEffect(() => {
-    const handleResize = () => setIsCompact(window.innerWidth < 1100);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const { width } = useViewport();
+  const isCompact = width < 1100;
 
   useEffect(() => {
     const el = containerRef.current;
