@@ -27,7 +27,7 @@
   width: 100%;
   color: white;
   font-family: sans-serif;
-  font-size: clamp(16px, 1.2vw, 16px);
+  font-size: 16px;
     position: relative;
   cursor: pointer;
 }
@@ -116,64 +116,4 @@
 .forecast-card-tab.active {
   background: rgba(255, 255, 255, 0.25);
   font-weight: 600;
-}
-
-@media (max-width: 580px) {
-  .forecast-list {
-    width: 100%;
-    flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: 270px;
-    padding-right: 10px;
-  }
-
-  .forecast-card {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-around;
-  }
-
-  .forecast-card img.forecast-icon {
-    order: -1;
-  }
-
-  .forecast-temp {
-    font-size: 24px;
-  }
-}
-
-@media (max-width: 1100px) {
-  .forecast-list {
-    width: 100%;
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    height: auto;
-    padding: 10px 16px;
-    gap: 8px;
-  }
-
-  .forecast-card {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 80px;
-    width: auto;
-    padding: 8px 12px;
-    gap: 4px;
-  }
-
-  .forecast-date {
-    align-items: center;
-    text-align: center;
-  }
-
-  .forecast-card.active::before {
-    width: 60%;
-    height: 3px;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-  }
 }
