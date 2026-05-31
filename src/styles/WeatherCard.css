@@ -269,7 +269,6 @@ body {
   .wrapper {
     padding-top: 15px;
     overflow: hidden;
-    height: 80vh;
     margin-inline: 10px;
     padding-inline: 0;
   }
