@@ -70,6 +70,24 @@ const WeatherCard: React.FC = () => {
     }
   }, []);
 
+const [now, setNow] = useState(Date.now());
+
+useEffect(() => {
+  const update = () => setNow(Date.now());
+  const delay = 60000 - (Date.now() % 60000);
+
+  let interval: NodeJS.Timeout;
+  const timeout = setTimeout(() => {
+    update();
+    interval = setInterval(update, 60000);
+  }, delay);
+
+  return () => {
+    clearTimeout(timeout);
+    if (interval) clearInterval(interval);
+  };
+}, []);
+
   const handleDetectLocation = async () => {
     setError(null);
     setWeatherData(null);
